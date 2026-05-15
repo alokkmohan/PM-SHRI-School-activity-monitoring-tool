@@ -353,11 +353,13 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
       </div>
 
       <div class="f-group">
-        <label>Photographs / PDF Documents (Minimum 3 required) <span class="req">*</span></label>
+        <label>Photographs / PDF Documents <span class="req">*</span>
+          <span style="font-weight:400;color:var(--muted);font-size:0.75rem;">(Images: min 3 &nbsp;|&nbsp; PDF: min 1, must contain 3+ photos)</span>
+        </label>
         <div class="photo-area" onclick="document.getElementById('photoInput').click()">
           <input type="file" id="photoInput" accept="image/*,application/pdf" multiple onchange="handlePhotos(this)">
           <div class="upload-icon">&#128247;</div>
-          <div class="upload-txt"><strong>Click to select photographs or PDF files</strong><br>JPG, PNG, PDF supported &bull; Minimum 3 required</div>
+          <div class="upload-txt"><strong>Click to select photographs or PDF files</strong><br>JPG, PNG, PDF supported &bull; Images: min 3 &nbsp;|&nbsp; PDF: min 1 (with 3+ photos inside)</div>
         </div>
         <div class="preview-grid" id="previewGrid"></div>
         <div class="photo-count" id="photoCount"></div>
@@ -588,9 +590,16 @@ function renderPreviews() {
     }
   });
 
-  if (n === 0)    { countEl.textContent = '';                                          countEl.className = 'photo-count'; }
-  else if (n < 3) { countEl.textContent = n + ' file(s) selected — minimum 3 required'; countEl.className = 'photo-count warn'; }
-  else            { countEl.textContent = n + ' file(s) selected ✓';                  countEl.className = 'photo-count ok'; }
+  const hasPdf = photoFiles.some(f => f.type === 'application/pdf');
+  if (n === 0) {
+    countEl.textContent = ''; countEl.className = 'photo-count';
+  } else if (hasPdf) {
+    countEl.textContent = n + ' file(s) selected ✓  (PDF must contain 3+ photos)'; countEl.className = 'photo-count ok';
+  } else if (n < 3) {
+    countEl.textContent = n + ' image(s) selected — minimum 3 required'; countEl.className = 'photo-count warn';
+  } else {
+    countEl.textContent = n + ' image(s) selected ✓'; countEl.className = 'photo-count ok';
+  }
 }
 
 // ============================================================
@@ -611,7 +620,9 @@ async function submitActivity() {
   if (toDate < fromDate)             { showAlert('formAlert', 'To Date cannot be earlier than From Date.'); return; }
   if (boys === '' && girls === '')   { showAlert('formAlert', 'Please enter the number of students (Boys / Girls).'); return; }
   if (teachers === '')               { showAlert('formAlert', 'Please enter the number of teachers involved.'); return; }
-  if (photoFiles.length < 3)        { showAlert('formAlert', 'Minimum 3 files required. Currently ' + photoFiles.length + ' selected.'); return; }
+  const hasPdf = photoFiles.some(f => f.type === 'application/pdf');
+  if (!hasPdf && photoFiles.length < 3) { showAlert('formAlert', 'Minimum 3 images required. Currently ' + photoFiles.length + ' selected. (Or upload a PDF containing 3+ photos.)'); return; }
+  if (photoFiles.length === 0)          { showAlert('formAlert', 'Please upload at least 1 PDF or 3 photographs.'); return; }
 
   const overlay = document.getElementById('uploadOverlay');
   overlay.classList.add('show');
