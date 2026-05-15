@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,6 @@
   --dark:   #0d2657;
   --light:  #e8f0fe;
   --green:  #1b8a3c;
-  --orange: #e65100;
   --text:   #1e293b;
   --muted:  #64748b;
   --border: #e2e8f0;
@@ -26,15 +25,15 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color:
 .tricolor { height: 5px; background: linear-gradient(90deg, #FF9933 33.33%, #fff 33.33% 66.66%, #138808 66.66%); }
 .header {
   background: linear-gradient(135deg, var(--dark) 0%, var(--blue) 100%);
-  color: white; padding: 12px 20px; text-align: center;
+  color: white; padding: 10px 20px; text-align: center;
   box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
-.header h1 { font-size: 1rem; font-weight: 800; letter-spacing: 0.3px; }
-.header p  { font-size: 0.72rem; opacity: 0.78; margin-top: 2px; }
+.header h1 { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.2px; }
+.header p  { font-size: 0.7rem; opacity: 0.78; margin-top: 2px; }
 
 /* ---- LOGIN PAGE ---- */
 .login-bg {
-  min-height: calc(100vh - 68px);
+  min-height: calc(100vh - 64px);
   display: flex; align-items: center; justify-content: center;
   padding: 24px 16px;
   background: linear-gradient(160deg, #e8eaf6 0%, #e3f2fd 100%);
@@ -84,7 +83,6 @@ hr.divider { border: none; border-top: 1px solid #eef0f8; margin: 20px 0; }
 .alert { padding: 11px 14px; border-radius: 8px; font-size: 0.84rem; margin-bottom: 14px; display: none; }
 .alert.show { display: block; }
 .alert-err { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; }
-.alert-ok  { background: #f0fff4; border: 1px solid #9ae6b4; color: #276749; }
 
 /* ---- DASHBOARD ---- */
 #dashboard { display: none; max-width: 780px; margin: 0 auto; padding: 20px 16px 48px; }
@@ -114,7 +112,7 @@ hr.divider { border: none; border-top: 1px solid #eef0f8; margin: 20px 0; }
 .info-table td:first-child { color: var(--muted); font-weight: 600; width: 38%; background: #fafbff; font-size: 0.8rem; }
 .info-table td:last-child { color: var(--text); font-weight: 500; }
 
-/* ---- PREVIOUS SUBMISSIONS TABLE ---- */
+/* ---- PREVIOUS SUBMISSIONS ---- */
 .prev-card { background: var(--white); border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 18px; }
 .prev-table-wrap { overflow-x: auto; }
 .prev-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
@@ -135,13 +133,12 @@ hr.divider { border: none; border-top: 1px solid #eef0f8; margin: 20px 0; }
 .folder-link:hover { text-decoration: underline; }
 .no-prev { padding: 18px; text-align: center; color: var(--muted); font-size: 0.84rem; }
 
-/* ---- ACTIVITY FORM CARD ---- */
+/* ---- ACTIVITY FORM ---- */
 .form-card { background: var(--white); border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; }
 .form-card-header { background: linear-gradient(90deg, #e65100, #ef6c00); color: white; padding: 13px 18px; }
 .form-card-header h3 { font-size: 0.9rem; font-weight: 700; }
 .form-body { padding: 20px 18px; }
 
-/* Activity selector tabs */
 .act-selector { margin-bottom: 20px; }
 .act-selector label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.4px; }
 .act-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -163,8 +160,7 @@ hr.divider { border: none; border-top: 1px solid #eef0f8; margin: 20px 0; }
 .act-tab-add:hover { border-color: var(--blue); color: var(--blue); }
 .tick { color: #22c55e; font-size: 0.85rem; }
 
-/* Form fields */
-.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.f-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 .f-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 .f-group { margin-bottom: 14px; }
 .f-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
@@ -176,7 +172,6 @@ input[type="text"], input[type="number"], input[type="date"] {
 input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,192,0.1); }
 @media (max-width: 480px) { .f-row, .f-row-3 { grid-template-columns: 1fr; } }
 
-/* Photo upload */
 .photo-area {
   border: 2px dashed #cbd5e0; border-radius: 10px;
   padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s;
@@ -200,7 +195,6 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 .photo-count.ok   { color: var(--green); font-weight: 600; }
 .photo-count.warn { color: #e53e3e; }
 
-/* Submit button */
 .btn-submit {
   width: 100%; padding: 13px; margin-top: 6px;
   background: linear-gradient(90deg, #e65100, #ef6c00);
@@ -211,7 +205,6 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 .btn-submit:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .btn-submit:disabled { background: #a0aec0; box-shadow: none; cursor: not-allowed; transform: none; }
 
-/* Upload overlay */
 .upload-overlay {
   position: fixed; inset: 0; background: rgba(13,38,87,0.82);
   display: none; align-items: center; justify-content: center; z-index: 999;
@@ -227,7 +220,6 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 .prog-bar { height: 10px; border-radius: 10px; background: linear-gradient(90deg, var(--blue), #42a5f5); transition: width 0.3s; }
 .upload-box .detail { margin-top: 10px; font-size: 0.75rem; color: #a0aec0; }
 
-/* Success toast */
 .toast {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
   background: var(--green); color: white; padding: 14px 24px; border-radius: 10px;
@@ -236,7 +228,6 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
-/* Spinner */
 .spinner {
   display: inline-block; width: 18px; height: 18px;
   border: 3px solid rgba(255,255,255,0.3); border-top-color: white;
@@ -250,26 +241,28 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 <div class="tricolor"></div>
 <div class="header">
   <h1>PM SHRI School Activity Monitoring Dashboard</h1>
-  <p>Pradhan Mantri Schools for Rising India &mdash; Ministry of Education, Govt. of India</p>
+  <p>Samagra Shiksha &nbsp;|&nbsp; Secondary Education Department, Govt. of Uttar Pradesh</p>
 </div>
 
 <!-- ========== LOGIN ========== -->
 <div class="login-bg" id="loginPage">
   <div class="login-card">
     <div class="login-top">
-      <div class="gov-tag">&#127787; Government of India &nbsp;|&nbsp; Ministry of Education</div>
+      <div class="gov-tag">&#127787; Samagra Shiksha &nbsp;|&nbsp; Secondary Education Dept., UP</div>
       <h2>PM SHRI</h2>
-      <div class="sub">School Activity Monitoring Dashboard<br><span style="font-size:0.7rem;opacity:0.7;">Pradhan Mantri Schools for Rising India</span></div>
+      <div class="sub">School Activity Monitoring Dashboard<br>
+        <span style="font-size:0.7rem;opacity:0.7;">Pradhan Mantri Schools for Rising India</span>
+      </div>
     </div>
     <div class="login-body">
       <div id="loginAlert" class="alert alert-err"></div>
-      <label class="field-lbl">&#128275;&nbsp; UDISE Code se Login Karein</label>
+      <label class="field-lbl">&#128275;&nbsp; Login with UDISE Code</label>
       <input type="tel" id="udiseInput" class="udise-inp" placeholder="00000000000"
              maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-      <div class="udise-hint">Apna 11-digit UDISE Code daalen</div>
+      <div class="udise-hint">Enter your 11-digit UDISE Code</div>
       <hr class="divider">
       <button class="btn btn-blue" id="loginBtn" onclick="doLogin()">Login &amp; Continue &rarr;</button>
-      <div class="login-note">Keval authorized PM SHRI school principals<br>apna UDISE code use karein.</div>
+      <div class="login-note">Only authorized PM SHRI school principals<br>may use their UDISE code to access this portal.</div>
     </div>
   </div>
 </div>
@@ -284,11 +277,11 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
       <div class="fetched-badge"><div class="fetched-dot"></div>UDISE Database</div>
     </div>
     <table class="info-table">
-      <tr><td>UDISE Code</td>      <td id="si_udise"></td></tr>
-      <tr><td>District</td>         <td id="si_district"></td></tr>
-      <tr><td>School Name</td>      <td id="si_school"></td></tr>
-      <tr><td>Principal Name</td>   <td id="si_principal"></td></tr>
-      <tr><td>Mobile No.</td>       <td id="si_mobile"></td></tr>
+      <tr><td>UDISE Code</td>     <td id="si_udise"></td></tr>
+      <tr><td>District</td>       <td id="si_district"></td></tr>
+      <tr><td>School Name</td>    <td id="si_school"></td></tr>
+      <tr><td>Principal Name</td> <td id="si_principal"></td></tr>
+      <tr><td>Mobile No.</td>     <td id="si_mobile"></td></tr>
     </table>
   </div>
 
@@ -304,7 +297,8 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
           <tr>
             <th>Act #</th>
             <th>Activity Name</th>
-            <th>Date</th>
+            <th>From Date</th>
+            <th>To Date</th>
             <th>Boys</th>
             <th>Girls</th>
             <th>Teachers</th>
@@ -318,35 +312,38 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
       </table>
     </div>
     <div class="no-prev" id="noPrev" style="display:none;">
-      Abhi tak koi activity submit nahi hui hai.
+      No activities submitted yet.
     </div>
   </div>
 
   <!-- Activity Form -->
   <div class="form-card">
     <div class="form-card-header">
-      <h3>&#10133; Nayi Activity Submit Karein</h3>
+      <h3>&#10133; Submit New Activity</h3>
     </div>
     <div class="form-body">
       <div id="formAlert" class="alert alert-err"></div>
 
-      <!-- Activity Selector -->
       <div class="act-selector">
-        <label>Kaunsi activity fill karni hai? <span style="color:#e53e3e">*</span></label>
+        <label>Select Activity to Submit <span style="color:#e53e3e">*</span></label>
         <div class="act-tabs" id="actTabs"></div>
       </div>
 
-      <!-- Activity Fields -->
+      <div class="f-group">
+        <label>Activity Name <span class="req">*</span></label>
+        <input type="text" id="a_name" placeholder="E.g.: Plantation Drive, Sports Day, Science Fair...">
+      </div>
       <div class="f-row">
-        <div class="f-group">
-          <label>Activity Name <span class="req">*</span></label>
-          <input type="text" id="a_name" placeholder="Jaise: Plantation Drive, Sports Day...">
+        <div class="f-group" style="margin-bottom:0">
+          <label>From Date <span class="req">*</span></label>
+          <input type="date" id="a_from_date">
         </div>
-        <div class="f-group">
-          <label>Activity Date <span class="req">*</span></label>
-          <input type="date" id="a_date">
+        <div class="f-group" style="margin-bottom:0">
+          <label>To Date <span class="req">*</span></label>
+          <input type="date" id="a_to_date">
         </div>
       </div>
+      <div style="margin-bottom:14px;"></div>
       <div class="f-row-3">
         <div class="f-group">
           <label>Boys (Students) <span class="req">*</span></label>
@@ -363,11 +360,11 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
       </div>
 
       <div class="f-group">
-        <label>Photos Upload (Minimum 3) <span class="req">*</span></label>
-        <div class="photo-area" id="photoArea" onclick="document.getElementById('photoInput').click()">
+        <label>Photographs (Minimum 3 required) <span class="req">*</span></label>
+        <div class="photo-area" onclick="document.getElementById('photoInput').click()">
           <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(this)">
           <div class="upload-icon">&#128247;</div>
-          <div class="upload-txt"><strong>Click to select photos</strong><br>JPG, PNG supported &bull; Min 3 required</div>
+          <div class="upload-txt"><strong>Click to select photographs</strong><br>JPG, PNG supported &bull; Minimum 3 required</div>
         </div>
         <div class="preview-grid" id="previewGrid"></div>
         <div class="photo-count" id="photoCount"></div>
@@ -382,7 +379,7 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
   <div style="text-align:center; margin-top:20px;">
     <button onclick="logOut()"
       style="background:none; border:none; color:var(--muted); font-size:0.8rem; cursor:pointer; text-decoration:underline;">
-      &#8617; Logout / Doosra School Login
+      &#8617; Logout / Switch School
     </button>
   </div>
 </div>
@@ -391,7 +388,7 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 <div class="upload-overlay" id="uploadOverlay">
   <div class="upload-box">
     <h3>&#128640; Uploading...</h3>
-    <div class="status" id="uploadStatus">Photos upload ho rahi hain...</div>
+    <div class="status" id="uploadStatus">Uploading photographs...</div>
     <div class="prog-bg"><div class="prog-bar" id="uploadBar" style="width:0%"></div></div>
     <div class="detail" id="uploadDetail"></div>
   </div>
@@ -401,11 +398,8 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-// State
-// ============================================================
 let schoolData    = {};
-let submissions   = [];    // from server
+let submissions   = [];
 let selectedActNum = 1;
 let photoFiles    = [];
 
@@ -414,15 +408,18 @@ let photoFiles    = [];
 // ============================================================
 function doLogin() {
   const udise = document.getElementById('udiseInput').value.trim();
-  if (!udise || udise.length < 9) { showAlert('loginAlert', 'Kripya valid UDISE Code daalen (9-11 digits).'); return; }
-
+  if (!udise || udise.length < 9) {
+    showAlert('loginAlert', 'Please enter a valid UDISE Code (9-11 digits).');
+    return;
+  }
   const btn = document.getElementById('loginBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Verifying...';
 
   google.script.run
     .withSuccessHandler(function(res) {
-      btn.disabled = false; btn.innerHTML = 'Login &amp; Continue &rarr;';
+      btn.disabled = false;
+      btn.innerHTML = 'Login &amp; Continue &rarr;';
       if (res.success) {
         schoolData  = res.data;
         submissions = res.submissions || [];
@@ -436,8 +433,9 @@ function doLogin() {
       }
     })
     .withFailureHandler(function(err) {
-      btn.disabled = false; btn.innerHTML = 'Login &amp; Continue &rarr;';
-      showAlert('loginAlert', 'Error: ' + err.message);
+      btn.disabled = false;
+      btn.innerHTML = 'Login &amp; Continue &rarr;';
+      showAlert('loginAlert', 'Connection error: ' + err.message);
     })
     .getSchoolData(udise);
 }
@@ -452,7 +450,7 @@ function logOut() {
 }
 
 // ============================================================
-// Fill School Info
+// School Info
 // ============================================================
 function fillSchoolInfo(d) {
   document.getElementById('si_udise').textContent     = d.udise;
@@ -472,12 +470,12 @@ function renderPrevTable() {
   tbody.innerHTML = '';
 
   if (!submissions || submissions.length === 0) {
-    noPrev.style.display  = 'block';
-    countEl.textContent   = '';
+    noPrev.style.display = 'block';
+    countEl.textContent  = '';
     return;
   }
   noPrev.style.display = 'none';
-  countEl.textContent  = submissions.length + ' activity submitted';
+  countEl.textContent  = submissions.length + ' record' + (submissions.length > 1 ? 's' : '');
 
   const colors = ['', 'a1', 'a2', 'a3', 'a4'];
   submissions.forEach(s => {
@@ -487,7 +485,8 @@ function renderPrevTable() {
     tr.innerHTML = `
       <td><span class="act-badge ${cls}">Act ${n}</span></td>
       <td><strong>${esc(s.name)}</strong></td>
-      <td>${esc(s.date)}</td>
+      <td>${esc(s.fromDate)}</td>
+      <td>${esc(s.toDate)}</td>
       <td>${s.boys}</td>
       <td>${s.girls}</td>
       <td>${s.teachers}</td>
@@ -504,52 +503,37 @@ function renderPrevTable() {
 // Activity Tabs
 // ============================================================
 function buildActTabs() {
-  const container = document.getElementById('actTabs');
+  const container    = document.getElementById('actTabs');
   container.innerHTML = '';
-
-  // Get set of submitted activity numbers
   const submittedNums = new Set(submissions.map(s => parseInt(s.activityNum) || 0));
   const maxSubmitted  = submittedNums.size > 0 ? Math.max(...submittedNums) : 0;
-
-  // Always show 1, 2, 3. If all 3 done, also show next slot.
-  const maxTab = Math.max(3, maxSubmitted + 1);
+  const maxTab        = Math.max(3, maxSubmitted + 1);
 
   for (let i = 1; i <= maxTab; i++) {
     const isDone = submittedNums.has(i);
-    const btn = document.createElement('button');
-    btn.className = 'act-tab' + (isDone ? ' done' : '') + (i === selectedActNum ? ' selected' : '');
+    const btn    = document.createElement('button');
+    btn.className  = 'act-tab' + (isDone ? ' done' : '') + (i === selectedActNum ? ' selected' : '');
     btn.dataset.num = i;
-    btn.innerHTML = (isDone ? '<span class="tick">&#10003;</span> ' : '') + 'Activity ' + i;
-    btn.onclick = function() { selectActTab(i); };
+    btn.innerHTML   = (isDone ? '<span class="tick">&#10003;</span> ' : '') + 'Activity ' + i;
+    btn.onclick     = function() { selectActTab(i); };
     container.appendChild(btn);
   }
 
-  // Add "+" button if maxTab is already filled
   if (submittedNums.has(maxTab)) {
-    const addBtn = document.createElement('button');
+    const addBtn    = document.createElement('button');
     addBtn.className = 'act-tab-add';
     addBtn.innerHTML = '&#43; Add Activity ' + (maxTab + 1);
-    addBtn.onclick = function() {
-      selectedActNum = maxTab + 1;
-      buildActTabs();
-      clearForm();
-    };
+    addBtn.onclick   = function() { selectedActNum = maxTab + 1; buildActTabs(); clearForm(); };
     container.appendChild(addBtn);
   }
 
-  // Auto-select first unsubmitted
-  if (!submittedNums.has(selectedActNum)) {
-    // keep selectedActNum as is
-  } else {
-    // find first unsubmitted
-    let found = false;
-    for (let i = 1; i <= maxTab; i++) {
-      if (!submittedNums.has(i)) { selectedActNum = i; found = true; break; }
-    }
-    if (!found) selectedActNum = maxTab + 1;
+  // Auto-select first unsubmitted slot
+  let found = false;
+  for (let i = 1; i <= maxTab; i++) {
+    if (!submittedNums.has(i)) { selectedActNum = i; found = true; break; }
   }
+  if (!found) selectedActNum = maxTab + 1;
 
-  // Highlight selected
   container.querySelectorAll('.act-tab').forEach(b => {
     b.classList.toggle('selected', parseInt(b.dataset.num) === selectedActNum);
   });
@@ -574,15 +558,13 @@ function handlePhotos(input) {
   input.value = '';
   renderPreviews();
 }
-
 function removePhoto(idx) { photoFiles.splice(idx, 1); renderPreviews(); }
 
 function renderPreviews() {
-  const grid     = document.getElementById('previewGrid');
-  const countEl  = document.getElementById('photoCount');
+  const grid    = document.getElementById('previewGrid');
+  const countEl = document.getElementById('photoCount');
   grid.innerHTML = '';
   const n = photoFiles.length;
-
   photoFiles.forEach((file, i) => {
     const reader = new FileReader();
     reader.onload = e => {
@@ -594,10 +576,9 @@ function renderPreviews() {
     };
     reader.readAsDataURL(file);
   });
-
-  if (n === 0)      { countEl.textContent = ''; countEl.className = 'photo-count'; }
-  else if (n < 3)   { countEl.textContent = n + ' photo(s) — Minimum 3 zaroori hain'; countEl.className = 'photo-count warn'; }
-  else              { countEl.textContent = n + ' photos selected ✓'; countEl.className = 'photo-count ok'; }
+  if (n === 0)    { countEl.textContent = '';                                             countEl.className = 'photo-count'; }
+  else if (n < 3) { countEl.textContent = n + ' photo(s) selected — minimum 3 required'; countEl.className = 'photo-count warn'; }
+  else            { countEl.textContent = n + ' photographs selected ✓';                 countEl.className = 'photo-count ok'; }
 }
 
 // ============================================================
@@ -606,31 +587,32 @@ function renderPreviews() {
 async function submitActivity() {
   hideAlert('formAlert');
   const name     = document.getElementById('a_name').value.trim();
-  const date     = document.getElementById('a_date').value;
+  const fromDate = document.getElementById('a_from_date').value;
+  const toDate   = document.getElementById('a_to_date').value;
   const boys     = document.getElementById('a_boys').value;
   const girls    = document.getElementById('a_girls').value;
   const teachers = document.getElementById('a_teachers').value;
 
-  if (!name)     { showAlert('formAlert', 'Activity Name khali nahi chhod sakte.'); return; }
-  if (!date)     { showAlert('formAlert', 'Activity Date select karein.'); return; }
-  if (boys === '' && girls === '') { showAlert('formAlert', 'Students ki sankhya darj karein.'); return; }
-  if (teachers === '') { showAlert('formAlert', 'Teachers ki sankhya darj karein.'); return; }
-  if (photoFiles.length < 3) { showAlert('formAlert', 'Minimum 3 photos upload karni hain. Abhi ' + photoFiles.length + ' selected hain.'); return; }
+  if (!name)                         { showAlert('formAlert', 'Activity Name cannot be empty.'); return; }
+  if (!fromDate)                     { showAlert('formAlert', 'Please select the Activity From Date.'); return; }
+  if (!toDate)                       { showAlert('formAlert', 'Please select the Activity To Date.'); return; }
+  if (toDate < fromDate)             { showAlert('formAlert', 'To Date cannot be earlier than From Date.'); return; }
+  if (boys === '' && girls === '')   { showAlert('formAlert', 'Please enter the number of students (Boys / Girls).'); return; }
+  if (teachers === '')               { showAlert('formAlert', 'Please enter the number of teachers involved.'); return; }
+  if (photoFiles.length < 3)        { showAlert('formAlert', 'Minimum 3 photographs required. Currently ' + photoFiles.length + ' selected.'); return; }
 
-  // Show overlay
   const overlay = document.getElementById('uploadOverlay');
   overlay.classList.add('show');
   document.getElementById('submitBtn').disabled = true;
 
-  const total    = photoFiles.length;
-  let done       = 0;
+  const total     = photoFiles.length;
+  let done        = 0;
   const photoUrls = [];
 
   for (let i = 0; i < photoFiles.length; i++) {
-    document.getElementById('uploadStatus').textContent = 'Photo ' + (i + 1) + ' of ' + total + ' upload ho rahi hai...';
+    document.getElementById('uploadStatus').textContent = 'Uploading photograph ' + (i + 1) + ' of ' + total + '...';
     document.getElementById('uploadDetail').textContent = done + ' / ' + total + ' complete';
     document.getElementById('uploadBar').style.width   = Math.round((done / total) * 85) + '%';
-
     try {
       const { base64, mimeType } = await compressPhoto(photoFiles[i]);
       const url = await uploadSinglePhoto(
@@ -643,18 +625,19 @@ async function submitActivity() {
     done++;
   }
 
-  document.getElementById('uploadStatus').textContent = 'Data save ho raha hai...';
+  document.getElementById('uploadStatus').textContent = 'Saving data...';
   document.getElementById('uploadBar').style.width    = '95%';
 
   const formData = {
-    udise:         schoolData.udise,
-    district:      schoolData.district,
-    schoolName:    schoolData.schoolName,
-    principalName: schoolData.principalName,
-    mobile:        schoolData.mobile,
-    activityNum:   selectedActNum,
-    activityName:  name,
-    activityDate:  date,
+    udise:            schoolData.udise,
+    district:         schoolData.district,
+    schoolName:       schoolData.schoolName,
+    principalName:    schoolData.principalName,
+    mobile:           schoolData.mobile,
+    activityNum:      selectedActNum,
+    activityName:     name,
+    activityFromDate: fromDate,
+    activityToDate:   toDate,
     boys, girls, teachers,
     photoUrls
   };
@@ -664,35 +647,33 @@ async function submitActivity() {
       overlay.classList.remove('show');
       document.getElementById('submitBtn').disabled = false;
       document.getElementById('uploadBar').style.width = '100%';
-
       if (res.success) {
-        // Add to local submissions list and refresh
         submissions.push({
           timestamp:   new Date().toLocaleString('en-IN'),
           activityNum: selectedActNum,
-          name, date, boys, girls, teachers,
-          total:       (parseInt(boys) || 0) + (parseInt(girls) || 0),
-          photoCount:  photoUrls.length,
-          folderUrl:   ''
+          name, fromDate, toDate, boys, girls, teachers,
+          total:      (parseInt(boys) || 0) + (parseInt(girls) || 0),
+          photoCount: photoUrls.length,
+          folderUrl:  ''
         });
         clearForm();
         buildActTabs();
         renderPrevTable();
-        showToast('Activity ' + selectedActNum + ' successfully submitted!');
+        showToast('Activity ' + selectedActNum + ' submitted successfully!');
       } else {
-        showAlert('formAlert', 'Save error: ' + res.message);
+        showAlert('formAlert', 'Error saving data: ' + res.message);
       }
     })
     .withFailureHandler(function(err) {
       overlay.classList.remove('show');
       document.getElementById('submitBtn').disabled = false;
-      showAlert('formAlert', 'Error: ' + err.message);
+      showAlert('formAlert', 'Connection error: ' + err.message);
     })
     .saveActivityData(formData);
 }
 
 // ============================================================
-// Compress + base64
+// Compress photo to base64
 // ============================================================
 function compressPhoto(file) {
   return new Promise((resolve, reject) => {
@@ -707,8 +688,7 @@ function compressPhoto(file) {
         const cv = document.createElement('canvas');
         cv.width = w; cv.height = h;
         cv.getContext('2d').drawImage(img, 0, 0, w, h);
-        const dataUrl = cv.toDataURL('image/jpeg', 0.75);
-        resolve({ base64: dataUrl.split(',')[1], mimeType: 'image/jpeg' });
+        resolve({ base64: cv.toDataURL('image/jpeg', 0.75).split(',')[1], mimeType: 'image/jpeg' });
       };
       img.onerror = reject;
       img.src = e.target.result;
@@ -719,7 +699,7 @@ function compressPhoto(file) {
 }
 
 function uploadSinglePhoto(base64, mimeType, fileName, district, udise, schoolName, actName) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     google.script.run
       .withSuccessHandler(r => resolve(r.success ? r.url : null))
       .withFailureHandler(() => resolve(null))
@@ -731,7 +711,7 @@ function uploadSinglePhoto(base64, mimeType, fileName, district, udise, schoolNa
 // Helpers
 // ============================================================
 function clearForm() {
-  ['a_name', 'a_date', 'a_boys', 'a_girls', 'a_teachers'].forEach(id => {
+  ['a_name','a_from_date','a_to_date','a_boys','a_girls','a_teachers'].forEach(id => {
     document.getElementById(id).value = '';
   });
   photoFiles = [];
@@ -739,21 +719,18 @@ function clearForm() {
   document.getElementById('photoCount').textContent = '';
   document.getElementById('photoInput').value = '';
 }
-
 function showAlert(id, msg) {
   const el = document.getElementById(id);
   el.textContent = msg; el.classList.add('show');
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 function hideAlert(id) { document.getElementById(id).classList.remove('show'); }
-
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = '✓  ' + msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3500);
 }
-
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }

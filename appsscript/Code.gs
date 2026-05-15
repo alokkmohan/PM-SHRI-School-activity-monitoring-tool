@@ -1,5 +1,6 @@
 // ============================================================
 // PM SHRI School Activity Monitoring - Google Apps Script
+// Samagra Shiksha | Secondary Education Department, Govt. of UP
 // ============================================================
 
 const SHEET_ID        = '1Xru8dZVrxCQO2e71oKhLr_ISVPJHGKBZlznK1zSxZj8';
@@ -25,15 +26,15 @@ function normUdise(v) {
 // ---- Lookup School + Previous Submissions ----
 function getSchoolData(udiseCode) {
   try {
-    const ss    = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(SCHOOLS_SHEET);
+    const ss      = SpreadsheetApp.openById(SHEET_ID);
+    const sheet   = ss.getSheetByName(SCHOOLS_SHEET);
     const lastRow = sheet.getLastRow();
 
     if (lastRow < DATA_START_ROW) {
-      return { success: false, message: 'Sheet mein data nahi mila.' };
+      return { success: false, message: 'No data found in the sheet.' };
     }
 
-    const data     = sheet.getRange(DATA_START_ROW, 1, lastRow - DATA_START_ROW + 1, 6).getValues();
+    const data      = sheet.getRange(DATA_START_ROW, 1, lastRow - DATA_START_ROW + 1, 6).getValues();
     const udiseNorm = normUdise(udiseCode);
 
     for (let i = 0; i < data.length; i++) {
@@ -51,7 +52,7 @@ function getSchoolData(udiseCode) {
         return { success: true, data: schoolInfo, submissions: submissions };
       }
     }
-    return { success: false, message: 'UDISE Code nahi mila. Kripya sahi 11-digit code daalen.' };
+    return { success: false, message: 'UDISE Code not found. Please enter the correct 11-digit code.' };
   } catch (err) {
     return { success: false, message: 'Server error: ' + err.message };
   }
@@ -65,26 +66,27 @@ function getPreviousSubmissions(udise) {
     if (!sheet || sheet.getLastRow() < 2) return [];
 
     const lastRow = sheet.getLastRow();
-    // Columns: Timestamp(0) | District(1) | School(2) | UDISE(3) | Principal(4) | Mobile(5) |
-    //          ActNo(6) | ActName(7) | ActDate(8) | Boys(9) | Girls(10) | Teachers(11) |
-    //          Total(12) | PhotoLinks(13) | FolderLink(14)
-    const data    = sheet.getRange(2, 1, lastRow - 1, 15).getValues();
-    const norm    = normUdise;
-    const udiseN  = norm(udise);
+    // Columns: Timestamp(0)|District(1)|School(2)|UDISE(3)|Principal(4)|Mobile(5)|
+    //          ActNo(6)|ActName(7)|FromDate(8)|ToDate(9)|Boys(10)|Girls(11)|
+    //          Teachers(12)|Total(13)|PhotoLinks(14)|FolderLink(15)
+    const data   = sheet.getRange(2, 1, lastRow - 1, 16).getValues();
+    const norm   = normUdise;
+    const udiseN = norm(udise);
 
     return data
-      .filter(row => norm(row[3]) === udiseN && row[7]) // col 3 = UDISE, col 7 = Activity Name
+      .filter(row => norm(row[3]) === udiseN && row[7])
       .map(row => ({
         timestamp:   row[0] ? Utilities.formatDate(new Date(row[0]), 'Asia/Kolkata', 'dd-MMM-yyyy HH:mm') : '',
         activityNum: row[6],
         name:        row[7],
-        date:        row[8] ? Utilities.formatDate(new Date(row[8]), 'Asia/Kolkata', 'dd-MMM-yyyy') : '',
-        boys:        row[9],
-        girls:       row[10],
-        teachers:    row[11],
-        total:       row[12],
-        photoCount:  String(row[13]).split('\n').filter(x => x.trim()).length,
-        folderUrl:   row[14] || ''
+        fromDate:    row[8] ? Utilities.formatDate(new Date(row[8]), 'Asia/Kolkata', 'dd-MMM-yyyy') : '',
+        toDate:      row[9] ? Utilities.formatDate(new Date(row[9]), 'Asia/Kolkata', 'dd-MMM-yyyy') : '',
+        boys:        row[10],
+        girls:       row[11],
+        teachers:    row[12],
+        total:       row[13],
+        photoCount:  String(row[14]).split('\n').filter(x => x.trim()).length,
+        folderUrl:   row[15] || ''
       }));
   } catch (e) {
     return [];
@@ -116,10 +118,10 @@ function uploadPhoto(base64Data, mimeType, fileName, district, udise, schoolName
 }
 
 // ---- Save One Activity Submission ----
-// Sheet column order:
+// Sheet columns:
 // Timestamp | District | School Name | UDISE Code | Principal Name | Mobile No. |
-// Activity No. | Activity Name | Activity Date | Boys | Girls | Teachers | Total Students |
-// Photo Links | Photos Folder Link
+// Activity No. | Activity Name | Activity From Date | Activity To Date |
+// Boys | Girls | Teachers | Total Students | Photo Links | Photos Folder Link
 function saveActivityData(formData) {
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
@@ -129,7 +131,7 @@ function saveActivityData(formData) {
       sheet = ss.insertSheet(RESPONSES_SHEET);
       const headers = [
         'Timestamp', 'District', 'School Name', 'UDISE Code', 'Principal Name', 'Mobile No.',
-        'Activity No.', 'Activity Name', 'Activity Date',
+        'Activity No.', 'Activity Name', 'Activity From Date', 'Activity To Date',
         'Boys', 'Girls', 'Teachers', 'Total Students',
         'Photo Links', 'Photos Folder Link'
       ];
@@ -146,11 +148,11 @@ function saveActivityData(formData) {
     // Get the activity folder URL in Drive
     let folderUrl = '';
     try {
-      const main  = DriveApp.getFolderById(PHOTOS_FOLDER_ID);
-      const dist  = getOrCreateSubFolder(main,  sanitize(formData.district));
-      const sch   = getOrCreateSubFolder(dist,  sanitize(formData.udise + '_' + formData.schoolName));
-      const act   = getOrCreateSubFolder(sch,   sanitize(formData.activityName));
-      folderUrl   = 'https://drive.google.com/drive/folders/' + act.getId();
+      const main = DriveApp.getFolderById(PHOTOS_FOLDER_ID);
+      const dist = getOrCreateSubFolder(main, sanitize(formData.district));
+      const sch  = getOrCreateSubFolder(dist, sanitize(formData.udise + '_' + formData.schoolName));
+      const act  = getOrCreateSubFolder(sch,  sanitize(formData.activityName));
+      folderUrl  = 'https://drive.google.com/drive/folders/' + act.getId();
     } catch (e) { /* non-fatal */ }
 
     sheet.appendRow([
@@ -162,7 +164,8 @@ function saveActivityData(formData) {
       formData.mobile,
       formData.activityNum,
       formData.activityName,
-      formData.activityDate,
+      formData.activityFromDate,
+      formData.activityToDate,
       boys, girls, teachers,
       boys + girls,
       (formData.photoUrls || []).join('\n'),
