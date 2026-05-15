@@ -141,11 +141,7 @@
 </div>
 
 <script>
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbytpij1QZ6ZzLpyUZYevmz6j9aBw87OKHeVh088kvxJllKgLXyuS6Apn9XEsxxnKuY/exec";
-  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  if (isMobile) {
-    window.location.replace(GAS_URL);
-  }
+  // GAS is deployed as "Anyone" (no login required), iframe works on all devices.
 </script>
 
 </body>
