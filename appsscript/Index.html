@@ -3,844 +3,712 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PM SHRI School Activity Monitoring</title>
+<title>PM SHRI School Activity Monitoring Dashboard</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f0f4f8;
-    color: #2d3748;
-    min-height: 100vh;
-  }
+:root {
+  --blue:   #1565c0;
+  --dark:   #0d2657;
+  --light:  #e8f0fe;
+  --green:  #1b8a3c;
+  --orange: #e65100;
+  --text:   #1e293b;
+  --muted:  #64748b;
+  --border: #e2e8f0;
+  --bg:     #f1f5fb;
+  --white:  #ffffff;
+}
 
-  /* ---- Header ---- */
-  .header {
-    background: linear-gradient(135deg, #1a237e 0%, #1565c0 100%);
-    color: white;
-    padding: 14px 20px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; }
-  .header p { font-size: 0.8rem; opacity: 0.85; margin-top: 2px; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  /* ---- Progress Bar ---- */
-  .progress-wrap {
-    background: #1565c0;
-    padding: 0 20px 14px;
-  }
-  .progress-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 6px;
-  }
-  .progress-labels span {
-    font-size: 0.65rem;
-    color: rgba(255,255,255,0.75);
-    flex: 1;
-    text-align: center;
-  }
-  .progress-labels span.active { color: #fff; font-weight: 700; }
-  .progress-bar-bg {
-    background: rgba(255,255,255,0.3);
-    border-radius: 10px;
-    height: 8px;
-  }
-  .progress-bar {
-    height: 8px;
-    border-radius: 10px;
-    background: #ffeb3b;
-    transition: width 0.4s ease;
-  }
+/* ---- TRICOLOR + HEADER ---- */
+.tricolor { height: 5px; background: linear-gradient(90deg, #FF9933 33.33%, #fff 33.33% 66.66%, #138808 66.66%); }
+.header {
+  background: linear-gradient(135deg, var(--dark) 0%, var(--blue) 100%);
+  color: white; padding: 12px 20px; text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+.header h1 { font-size: 1rem; font-weight: 800; letter-spacing: 0.3px; }
+.header p  { font-size: 0.72rem; opacity: 0.78; margin-top: 2px; }
 
-  /* ---- Main Container ---- */
-  .container {
-    max-width: 680px;
-    margin: 24px auto;
-    padding: 0 16px 40px;
-  }
+/* ---- LOGIN PAGE ---- */
+.login-bg {
+  min-height: calc(100vh - 68px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 16px;
+  background: linear-gradient(160deg, #e8eaf6 0%, #e3f2fd 100%);
+}
+.login-card {
+  width: 100%; max-width: 430px;
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(26,35,126,0.18);
+}
+.login-top {
+  background: linear-gradient(135deg, var(--dark) 0%, var(--blue) 100%);
+  padding: 28px 28px 24px; text-align: center; position: relative;
+}
+.login-top::after {
+  content: ''; position: absolute; bottom: -15px; left: 50%;
+  transform: translateX(-50%);
+  border-left: 22px solid transparent; border-right: 22px solid transparent;
+  border-top: 16px solid var(--blue);
+}
+.gov-tag {
+  display: inline-block; background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.28); border-radius: 20px;
+  padding: 4px 14px; font-size: 0.68rem; color: rgba(255,255,255,0.88);
+  letter-spacing: 0.5px; margin-bottom: 14px;
+}
+.login-top h2 { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.login-top .sub { font-size: 0.78rem; color: rgba(255,255,255,0.75); line-height: 1.5; }
+.login-body { background: white; padding: 36px 28px 28px; }
+.field-lbl { display: block; font-size: 0.82rem; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+.udise-inp {
+  width: 100%; padding: 14px; font-size: 1.3rem; font-weight: 700;
+  letter-spacing: 4px; text-align: center;
+  border: 2px solid #c5cae9; border-radius: 10px;
+  background: #f8f9ff; color: var(--dark);
+  transition: border-color 0.2s, background 0.2s;
+}
+.udise-inp:focus { outline: none; border-color: var(--blue); background: #fff; }
+.udise-hint { font-size: 0.72rem; color: #90a4ae; text-align: center; margin-top: 6px; }
+hr.divider { border: none; border-top: 1px solid #eef0f8; margin: 20px 0; }
+.btn { border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-blue { background: var(--blue); color: white; width: 100%; padding: 13px; font-size: 0.95rem; }
+.btn-blue:hover { background: var(--dark); }
+.btn-blue:disabled { background: #a0aec0; cursor: not-allowed; }
+.login-note { text-align: center; margin-top: 14px; font-size: 0.72rem; color: #b0bec5; line-height: 1.6; }
 
-  /* ---- Card ---- */
-  .card {
-    background: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    margin-bottom: 16px;
-  }
-  .card-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1a237e;
-    border-left: 4px solid #1565c0;
-    padding-left: 10px;
-    margin-bottom: 18px;
-  }
+/* ---- ALERT ---- */
+.alert { padding: 11px 14px; border-radius: 8px; font-size: 0.84rem; margin-bottom: 14px; display: none; }
+.alert.show { display: block; }
+.alert-err { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; }
+.alert-ok  { background: #f0fff4; border: 1px solid #9ae6b4; color: #276749; }
 
-  /* ---- Form Fields ---- */
-  .field { margin-bottom: 16px; }
-  label {
-    display: block;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #4a5568;
-    margin-bottom: 6px;
-  }
-  label .req { color: #e53e3e; }
-  input[type="text"], input[type="number"], input[type="date"], input[type="tel"] {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1.5px solid #cbd5e0;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: #2d3748;
-    background: white;
-    transition: border-color 0.2s;
-  }
-  input:focus {
-    outline: none;
-    border-color: #1565c0;
-    box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
-  }
-  input[readonly] {
-    background: #f7fafc;
-    color: #718096;
-    cursor: not-allowed;
-  }
+/* ---- DASHBOARD ---- */
+#dashboard { display: none; max-width: 780px; margin: 0 auto; padding: 20px 16px 48px; }
 
-  .field-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  @media (max-width: 500px) {
-    .field-row { grid-template-columns: 1fr; }
-    .field-row-3 { grid-template-columns: 1fr !important; }
-  }
-  .field-row-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-  }
+/* ---- SCHOOL INFO TABLE ---- */
+.school-card {
+  background: var(--white); border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 18px;
+}
+.card-header {
+  background: linear-gradient(90deg, var(--dark), var(--blue));
+  color: white; padding: 13px 18px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.card-header h3 { font-size: 0.9rem; font-weight: 700; }
+.fetched-badge {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px; padding: 3px 10px; font-size: 0.67rem; color: rgba(255,255,255,0.9);
+  white-space: nowrap;
+}
+.fetched-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+.info-table { width: 100%; border-collapse: collapse; }
+.info-table tr { border-bottom: 1px solid var(--border); }
+.info-table tr:last-child { border-bottom: none; }
+.info-table td { padding: 10px 18px; font-size: 0.86rem; }
+.info-table td:first-child { color: var(--muted); font-weight: 600; width: 38%; background: #fafbff; font-size: 0.8rem; }
+.info-table td:last-child { color: var(--text); font-weight: 500; }
 
-  /* ---- Info Box ---- */
-  .info-box {
-    background: #e8f5e9;
-    border: 1px solid #a5d6a7;
-    border-radius: 8px;
-    padding: 14px 16px;
-    font-size: 0.85rem;
-    color: #2e7d32;
-  }
-  .info-box strong { display: block; margin-bottom: 4px; }
+/* ---- PREVIOUS SUBMISSIONS TABLE ---- */
+.prev-card { background: var(--white); border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 18px; }
+.prev-table-wrap { overflow-x: auto; }
+.prev-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.prev-table thead tr { background: #f0f4ff; }
+.prev-table th { padding: 9px 12px; text-align: left; color: var(--dark); font-weight: 700; font-size: 0.75rem; border-bottom: 2px solid var(--border); white-space: nowrap; }
+.prev-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.prev-table tbody tr:last-child td { border-bottom: none; }
+.prev-table tbody tr:hover { background: #fafbff; }
+.act-badge {
+  display: inline-block; min-width: 26px; padding: 2px 7px;
+  background: var(--blue); color: white; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 700; text-align: center;
+}
+.act-badge.a2 { background: #0288d1; }
+.act-badge.a3 { background: var(--green); }
+.act-badge.a4 { background: #7b1fa2; }
+.folder-link { color: var(--blue); text-decoration: none; font-size: 0.75rem; }
+.folder-link:hover { text-decoration: underline; }
+.no-prev { padding: 18px; text-align: center; color: var(--muted); font-size: 0.84rem; }
 
-  .info-row { display: flex; margin-bottom: 6px; }
-  .info-label { min-width: 130px; font-weight: 600; color: #4a5568; font-size: 0.82rem; }
-  .info-value { color: #2d3748; font-size: 0.85rem; }
+/* ---- ACTIVITY FORM CARD ---- */
+.form-card { background: var(--white); border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; }
+.form-card-header { background: linear-gradient(90deg, #e65100, #ef6c00); color: white; padding: 13px 18px; }
+.form-card-header h3 { font-size: 0.9rem; font-weight: 700; }
+.form-body { padding: 20px 18px; }
 
-  /* ---- Photo Upload ---- */
-  .photo-upload-area {
-    border: 2px dashed #cbd5e0;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-  }
-  .photo-upload-area:hover { border-color: #1565c0; background: #f0f7ff; }
-  .photo-upload-area input[type="file"] {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    opacity: 0; cursor: pointer;
-  }
-  .upload-icon { font-size: 2rem; color: #a0aec0; margin-bottom: 8px; }
-  .upload-text { font-size: 0.85rem; color: #718096; }
-  .upload-text strong { color: #1565c0; }
+/* Activity selector tabs */
+.act-selector { margin-bottom: 20px; }
+.act-selector label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.4px; }
+.act-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.act-tab {
+  padding: 8px 16px; border: 2px solid var(--border);
+  border-radius: 8px; background: #fafbff; color: var(--muted);
+  font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; gap: 5px;
+}
+.act-tab:hover { border-color: var(--blue); color: var(--blue); background: var(--light); }
+.act-tab.selected { border-color: var(--blue); color: var(--blue); background: var(--light); }
+.act-tab.done { border-color: #c8e6c9; color: var(--green); background: #f1f8f1; }
+.act-tab.done.selected { border-color: var(--green); background: #e8f5e9; }
+.act-tab-add {
+  padding: 8px 16px; border: 2px dashed #cbd5e0;
+  border-radius: 8px; background: transparent; color: var(--muted);
+  font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.18s;
+}
+.act-tab-add:hover { border-color: var(--blue); color: var(--blue); }
+.tick { color: #22c55e; font-size: 0.85rem; }
 
-  .photo-preview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 8px;
-    margin-top: 12px;
-  }
-  .preview-item {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    aspect-ratio: 1;
-    background: #f7fafc;
-  }
-  .preview-item img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-  .preview-item .remove-btn {
-    position: absolute;
-    top: 4px; right: 4px;
-    background: rgba(229,62,62,0.9);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 22px; height: 22px;
-    font-size: 12px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    line-height: 1;
-  }
-  .photo-count {
-    font-size: 0.8rem;
-    color: #718096;
-    margin-top: 8px;
-  }
-  .photo-count.ok { color: #2e7d32; font-weight: 600; }
-  .photo-count.warn { color: #e53e3e; }
+/* Form fields */
+.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.f-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.f-group { margin-bottom: 14px; }
+.f-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+.f-group label .req { color: #e53e3e; }
+input[type="text"], input[type="number"], input[type="date"] {
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 0.88rem; color: var(--text); background: white; transition: border-color 0.2s;
+}
+input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,192,0.1); }
+@media (max-width: 480px) { .f-row, .f-row-3 { grid-template-columns: 1fr; } }
 
-  /* ---- Buttons ---- */
-  .btn {
-    padding: 12px 28px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-primary {
-    background: #1565c0;
-    color: white;
-    width: 100%;
-  }
-  .btn-primary:hover { background: #1a237e; }
-  .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
-  .btn-secondary {
-    background: #edf2f7;
-    color: #4a5568;
-  }
-  .btn-secondary:hover { background: #e2e8f0; }
-  .btn-success {
-    background: #2e7d32;
-    color: white;
-    width: 100%;
-  }
-  .btn-success:hover { background: #1b5e20; }
+/* Photo upload */
+.photo-area {
+  border: 2px dashed #cbd5e0; border-radius: 10px;
+  padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s;
+  position: relative; margin-bottom: 10px;
+}
+.photo-area:hover { border-color: var(--blue); background: #f0f7ff; }
+.photo-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.upload-icon { font-size: 1.8rem; color: #a0aec0; margin-bottom: 6px; }
+.upload-txt { font-size: 0.8rem; color: var(--muted); }
+.upload-txt strong { color: var(--blue); }
+.preview-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.preview-item { position: relative; width: 80px; height: 80px; border-radius: 8px; overflow: hidden; background: #f7fafc; }
+.preview-item img { width: 100%; height: 100%; object-fit: cover; }
+.rm-btn {
+  position: absolute; top: 3px; right: 3px;
+  background: rgba(220,38,38,0.85); color: white; border: none;
+  border-radius: 50%; width: 20px; height: 20px; font-size: 11px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.photo-count { font-size: 0.78rem; color: var(--muted); margin-top: 6px; }
+.photo-count.ok   { color: var(--green); font-weight: 600; }
+.photo-count.warn { color: #e53e3e; }
 
-  .btn-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
-  }
-  .btn-row .btn-secondary { flex: 0 0 auto; }
-  .btn-row .btn-primary { flex: 1; }
+/* Submit button */
+.btn-submit {
+  width: 100%; padding: 13px; margin-top: 6px;
+  background: linear-gradient(90deg, #e65100, #ef6c00);
+  color: white; font-size: 0.95rem; font-weight: 700;
+  border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 3px 10px rgba(230,81,0,0.35);
+}
+.btn-submit:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn-submit:disabled { background: #a0aec0; box-shadow: none; cursor: not-allowed; transform: none; }
 
-  /* ---- UDISE Login ---- */
-  .login-card {
-    max-width: 420px;
-    margin: 60px auto 0;
-  }
-  .login-logo {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .login-logo .emblem { font-size: 3.5rem; }
-  .login-logo h2 { font-size: 1.1rem; color: #1a237e; font-weight: 700; margin-top: 8px; }
-  .login-logo p { font-size: 0.8rem; color: #718096; }
+/* Upload overlay */
+.upload-overlay {
+  position: fixed; inset: 0; background: rgba(13,38,87,0.82);
+  display: none; align-items: center; justify-content: center; z-index: 999;
+}
+.upload-overlay.show { display: flex; }
+.upload-box {
+  background: white; border-radius: 16px; padding: 36px 32px;
+  max-width: 380px; width: 90%; text-align: center;
+}
+.upload-box h3 { color: var(--dark); margin-bottom: 8px; font-size: 1.1rem; }
+.upload-box .status { font-size: 0.85rem; color: var(--muted); margin-bottom: 14px; }
+.prog-bg { background: #edf2f7; border-radius: 10px; height: 10px; overflow: hidden; }
+.prog-bar { height: 10px; border-radius: 10px; background: linear-gradient(90deg, var(--blue), #42a5f5); transition: width 0.3s; }
+.upload-box .detail { margin-top: 10px; font-size: 0.75rem; color: #a0aec0; }
 
-  .udise-input {
-    font-size: 1.2rem !important;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-align: center;
-  }
-  .udise-hint { font-size: 0.75rem; color: #718096; text-align: center; margin-top: 4px; }
+/* Success toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--green); color: white; padding: 14px 24px; border-radius: 10px;
+  font-size: 0.88rem; font-weight: 600; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  transition: transform 0.3s; z-index: 1000; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* ---- Error / Alert ---- */
-  .alert {
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    margin-bottom: 16px;
-    display: none;
-  }
-  .alert-error { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; }
-  .alert-success { background: #f0fff4; border: 1px solid #9ae6b4; color: #276749; }
-  .alert.show { display: block; }
-
-  /* ---- Upload Progress ---- */
-  .upload-progress {
-    background: white;
-    border-radius: 12px;
-    padding: 30px 24px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    text-align: center;
-  }
-  .upload-progress h3 { color: #1a237e; margin-bottom: 16px; }
-  .upload-status { font-size: 0.85rem; color: #718096; margin-bottom: 12px; }
-  .upload-progress-bar-bg {
-    background: #edf2f7;
-    border-radius: 10px;
-    height: 10px;
-    overflow: hidden;
-  }
-  .upload-progress-bar {
-    height: 10px;
-    border-radius: 10px;
-    background: linear-gradient(90deg, #1565c0, #42a5f5);
-    transition: width 0.3s ease;
-  }
-
-  /* ---- Success Screen ---- */
-  .success-screen {
-    text-align: center;
-    padding: 40px 24px;
-  }
-  .success-icon { font-size: 5rem; margin-bottom: 16px; }
-  .success-screen h2 { color: #2e7d32; font-size: 1.4rem; margin-bottom: 8px; }
-  .success-screen p { color: #718096; font-size: 0.9rem; line-height: 1.6; }
-  .success-ref {
-    background: #e8f5e9;
-    border-radius: 8px;
-    padding: 12px;
-    margin: 16px 0;
-    font-size: 0.85rem;
-    color: #2e7d32;
-  }
-
-  /* ---- Steps: hide/show ---- */
-  .step { display: none; }
-  .step.active { display: block; }
-
-  /* ---- Spinner ---- */
-  .spinner {
-    display: inline-block;
-    width: 20px; height: 20px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 8px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* Spinner */
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 3px solid rgba(255,255,255,0.3); border-top-color: white;
+  border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
+<div class="tricolor"></div>
 <div class="header">
-  <h1>&#127979; PM SHRI School Activity Monitoring</h1>
-  <p>Pradhan Mantri Schools for Rising India</p>
+  <h1>PM SHRI School Activity Monitoring Dashboard</h1>
+  <p>Pradhan Mantri Schools for Rising India &mdash; Ministry of Education, Govt. of India</p>
 </div>
 
-<div class="progress-wrap" id="progressWrap" style="display:none;">
-  <div class="progress-labels">
-    <span id="pl1">Login</span>
-    <span id="pl2">Activity 1</span>
-    <span id="pl3">Activity 2</span>
-    <span id="pl4">Activity 3</span>
-    <span id="pl5">Submit</span>
-  </div>
-  <div class="progress-bar-bg">
-    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+<!-- ========== LOGIN ========== -->
+<div class="login-bg" id="loginPage">
+  <div class="login-card">
+    <div class="login-top">
+      <div class="gov-tag">&#127787; Government of India &nbsp;|&nbsp; Ministry of Education</div>
+      <h2>PM SHRI</h2>
+      <div class="sub">School Activity Monitoring Dashboard<br><span style="font-size:0.7rem;opacity:0.7;">Pradhan Mantri Schools for Rising India</span></div>
+    </div>
+    <div class="login-body">
+      <div id="loginAlert" class="alert alert-err"></div>
+      <label class="field-lbl">&#128275;&nbsp; UDISE Code se Login Karein</label>
+      <input type="tel" id="udiseInput" class="udise-inp" placeholder="00000000000"
+             maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+      <div class="udise-hint">Apna 11-digit UDISE Code daalen</div>
+      <hr class="divider">
+      <button class="btn btn-blue" id="loginBtn" onclick="doLogin()">Login &amp; Continue &rarr;</button>
+      <div class="login-note">Keval authorized PM SHRI school principals<br>apna UDISE code use karein.</div>
+    </div>
   </div>
 </div>
 
-<div class="container">
+<!-- ========== DASHBOARD ========== -->
+<div id="dashboard">
 
-  <!-- ========== STEP 1: UDISE LOGIN ========== -->
-  <div class="step active" id="step1">
-    <div class="card login-card">
-      <div class="login-logo">
-        <div class="emblem">&#127979;</div>
-        <h2>School Login</h2>
-        <p>Apna UDISE Code dalkar login karein</p>
+  <!-- School Info -->
+  <div class="school-card">
+    <div class="card-header">
+      <h3>&#127979; School Information</h3>
+      <div class="fetched-badge"><div class="fetched-dot"></div>UDISE Database</div>
+    </div>
+    <table class="info-table">
+      <tr><td>UDISE Code</td>      <td id="si_udise"></td></tr>
+      <tr><td>District</td>         <td id="si_district"></td></tr>
+      <tr><td>School Name</td>      <td id="si_school"></td></tr>
+      <tr><td>Principal Name</td>   <td id="si_principal"></td></tr>
+      <tr><td>Mobile No.</td>       <td id="si_mobile"></td></tr>
+    </table>
+  </div>
+
+  <!-- Previous Submissions -->
+  <div class="prev-card" id="prevCard">
+    <div class="card-header" style="background:linear-gradient(90deg,#1b5e20,#388e3c);">
+      <h3>&#9989; Submitted Activities</h3>
+      <span style="font-size:0.75rem;opacity:0.85;" id="prevCount"></span>
+    </div>
+    <div class="prev-table-wrap">
+      <table class="prev-table" id="prevTable">
+        <thead>
+          <tr>
+            <th>Act #</th>
+            <th>Activity Name</th>
+            <th>Date</th>
+            <th>Boys</th>
+            <th>Girls</th>
+            <th>Teachers</th>
+            <th>Total</th>
+            <th>Photos</th>
+            <th>Drive Folder</th>
+            <th>Submitted On</th>
+          </tr>
+        </thead>
+        <tbody id="prevTbody"></tbody>
+      </table>
+    </div>
+    <div class="no-prev" id="noPrev" style="display:none;">
+      Abhi tak koi activity submit nahi hui hai.
+    </div>
+  </div>
+
+  <!-- Activity Form -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <h3>&#10133; Nayi Activity Submit Karein</h3>
+    </div>
+    <div class="form-body">
+      <div id="formAlert" class="alert alert-err"></div>
+
+      <!-- Activity Selector -->
+      <div class="act-selector">
+        <label>Kaunsi activity fill karni hai? <span style="color:#e53e3e">*</span></label>
+        <div class="act-tabs" id="actTabs"></div>
       </div>
 
-      <div id="loginAlert" class="alert alert-error"></div>
-
-      <div class="field">
-        <label>UDISE Code <span class="req">*</span></label>
-        <input type="tel" id="udiseInput" class="udise-input"
-               placeholder="11 digit code" maxlength="11"
-               oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        <div class="udise-hint">Example: 09151711940</div>
+      <!-- Activity Fields -->
+      <div class="f-row">
+        <div class="f-group">
+          <label>Activity Name <span class="req">*</span></label>
+          <input type="text" id="a_name" placeholder="Jaise: Plantation Drive, Sports Day...">
+        </div>
+        <div class="f-group">
+          <label>Activity Date <span class="req">*</span></label>
+          <input type="date" id="a_date">
+        </div>
+      </div>
+      <div class="f-row-3">
+        <div class="f-group">
+          <label>Boys (Students) <span class="req">*</span></label>
+          <input type="number" id="a_boys" placeholder="0" min="0">
+        </div>
+        <div class="f-group">
+          <label>Girls (Students) <span class="req">*</span></label>
+          <input type="number" id="a_girls" placeholder="0" min="0">
+        </div>
+        <div class="f-group">
+          <label>Teachers <span class="req">*</span></label>
+          <input type="number" id="a_teachers" placeholder="0" min="0">
+        </div>
       </div>
 
-      <button class="btn btn-primary" onclick="doLogin()" id="loginBtn">
-        Login &rarr;
+      <div class="f-group">
+        <label>Photos Upload (Minimum 3) <span class="req">*</span></label>
+        <div class="photo-area" id="photoArea" onclick="document.getElementById('photoInput').click()">
+          <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(this)">
+          <div class="upload-icon">&#128247;</div>
+          <div class="upload-txt"><strong>Click to select photos</strong><br>JPG, PNG supported &bull; Min 3 required</div>
+        </div>
+        <div class="preview-grid" id="previewGrid"></div>
+        <div class="photo-count" id="photoCount"></div>
+      </div>
+
+      <button class="btn btn-submit" id="submitBtn" onclick="submitActivity()">
+        &#10003;&nbsp; Submit Activity
       </button>
     </div>
   </div>
 
-  <!-- ========== STEP 2: SCHOOL INFO + ACTIVITY 1 ========== -->
-  <div class="step" id="step2">
-    <div id="schoolInfoBox" class="card">
-      <div class="card-title">&#127979; School Information</div>
-      <div class="info-row"><div class="info-label">UDISE Code</div><div class="info-value" id="si_udise"></div></div>
-      <div class="info-row"><div class="info-label">District</div><div class="info-value" id="si_district"></div></div>
-      <div class="info-row"><div class="info-label">School Name</div><div class="info-value" id="si_school"></div></div>
-      <div class="info-row"><div class="info-label">Principal Name</div><div class="info-value" id="si_principal"></div></div>
-      <div class="info-row"><div class="info-label">Mobile No.</div><div class="info-value" id="si_mobile"></div></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">&#127775; Activity 1</div>
-      <div id="act1Alert" class="alert alert-error"></div>
-
-      <div class="field">
-        <label>Activity Name <span class="req">*</span></label>
-        <input type="text" id="a1_name" placeholder="Jaise: Plantation Drive, Sports Day, Swachh Bharat...">
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Activity Date <span class="req">*</span></label>
-          <input type="date" id="a1_date">
-        </div>
-        <div class="field">
-          <label>Teachers Involved <span class="req">*</span></label>
-          <input type="number" id="a1_teachers" placeholder="0" min="0">
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Boys (Students) <span class="req">*</span></label>
-          <input type="number" id="a1_boys" placeholder="0" min="0">
-        </div>
-        <div class="field">
-          <label>Girls (Students) <span class="req">*</span></label>
-          <input type="number" id="a1_girls" placeholder="0" min="0">
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Photos Upload (Minimum 3) <span class="req">*</span></label>
-        <div class="photo-upload-area" onclick="document.getElementById('a1_photos').click()">
-          <input type="file" id="a1_photos" accept="image/*" multiple onchange="handlePhotos(1, this)">
-          <div class="upload-icon">&#128247;</div>
-          <div class="upload-text"><strong>Click to select photos</strong><br>JPG, PNG supported</div>
-        </div>
-        <div class="photo-preview-grid" id="a1_preview"></div>
-        <div class="photo-count" id="a1_count"></div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-secondary" onclick="goBack(1)">&larr; Back</button>
-        <button class="btn btn-primary" onclick="nextActivity(1)">Next: Activity 2 &rarr;</button>
-      </div>
-    </div>
+  <div style="text-align:center; margin-top:20px;">
+    <button onclick="logOut()"
+      style="background:none; border:none; color:var(--muted); font-size:0.8rem; cursor:pointer; text-decoration:underline;">
+      &#8617; Logout / Doosra School Login
+    </button>
   </div>
-
-  <!-- ========== STEP 3: ACTIVITY 2 ========== -->
-  <div class="step" id="step3">
-    <div class="card">
-      <div class="card-title">&#127775; Activity 2</div>
-      <div id="act2Alert" class="alert alert-error"></div>
-
-      <div class="field">
-        <label>Activity Name <span class="req">*</span></label>
-        <input type="text" id="a2_name" placeholder="Jaise: Science Fair, Cultural Program...">
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Activity Date <span class="req">*</span></label>
-          <input type="date" id="a2_date">
-        </div>
-        <div class="field">
-          <label>Teachers Involved <span class="req">*</span></label>
-          <input type="number" id="a2_teachers" placeholder="0" min="0">
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Boys (Students) <span class="req">*</span></label>
-          <input type="number" id="a2_boys" placeholder="0" min="0">
-        </div>
-        <div class="field">
-          <label>Girls (Students) <span class="req">*</span></label>
-          <input type="number" id="a2_girls" placeholder="0" min="0">
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Photos Upload (Minimum 3) <span class="req">*</span></label>
-        <div class="photo-upload-area" onclick="document.getElementById('a2_photos').click()">
-          <input type="file" id="a2_photos" accept="image/*" multiple onchange="handlePhotos(2, this)">
-          <div class="upload-icon">&#128247;</div>
-          <div class="upload-text"><strong>Click to select photos</strong><br>JPG, PNG supported</div>
-        </div>
-        <div class="photo-preview-grid" id="a2_preview"></div>
-        <div class="photo-count" id="a2_count"></div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-secondary" onclick="goStep(2)">&larr; Back</button>
-        <button class="btn btn-primary" onclick="nextActivity(2)">Next: Activity 3 &rarr;</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== STEP 4: ACTIVITY 3 ========== -->
-  <div class="step" id="step4">
-    <div class="card">
-      <div class="card-title">&#127775; Activity 3</div>
-      <div id="act3Alert" class="alert alert-error"></div>
-
-      <div class="field">
-        <label>Activity Name <span class="req">*</span></label>
-        <input type="text" id="a3_name" placeholder="Jaise: Health Camp, Environment Day...">
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Activity Date <span class="req">*</span></label>
-          <input type="date" id="a3_date">
-        </div>
-        <div class="field">
-          <label>Teachers Involved <span class="req">*</span></label>
-          <input type="number" id="a3_teachers" placeholder="0" min="0">
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Boys (Students) <span class="req">*</span></label>
-          <input type="number" id="a3_boys" placeholder="0" min="0">
-        </div>
-        <div class="field">
-          <label>Girls (Students) <span class="req">*</span></label>
-          <input type="number" id="a3_girls" placeholder="0" min="0">
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Photos Upload (Minimum 3) <span class="req">*</span></label>
-        <div class="photo-upload-area" onclick="document.getElementById('a3_photos').click()">
-          <input type="file" id="a3_photos" accept="image/*" multiple onchange="handlePhotos(3, this)">
-          <div class="upload-icon">&#128247;</div>
-          <div class="upload-text"><strong>Click to select photos</strong><br>JPG, PNG supported</div>
-        </div>
-        <div class="photo-preview-grid" id="a3_preview"></div>
-        <div class="photo-count" id="a3_count"></div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-secondary" onclick="goStep(3)">&larr; Back</button>
-        <button class="btn btn-success" onclick="submitForm()">&#10003; Submit Form</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== STEP 5: UPLOADING ========== -->
-  <div class="step" id="step5">
-    <div class="card upload-progress">
-      <h3>&#128640; Uploading...</h3>
-      <div class="upload-status" id="uploadStatus">Photos upload ho rahi hain...</div>
-      <div class="upload-progress-bar-bg">
-        <div class="upload-progress-bar" id="uploadBar" style="width:0%"></div>
-      </div>
-      <div style="margin-top:12px; font-size:0.8rem; color:#a0aec0;" id="uploadDetail"></div>
-    </div>
-  </div>
-
-  <!-- ========== STEP 6: SUCCESS ========== -->
-  <div class="step" id="step6">
-    <div class="card success-screen">
-      <div class="success-icon">&#9989;</div>
-      <h2>Form Successfully Submitted!</h2>
-      <div class="success-ref" id="successRef"></div>
-      <p>Aapka data safaltapurvak save ho gaya hai.<br>
-         Photos Google Drive mein upload ho gayi hain.</p>
-      <br>
-      <button class="btn btn-primary" onclick="resetForm()" style="max-width:260px;margin:0 auto;">
-        Naya Form Bharen
-      </button>
-    </div>
-  </div>
-
 </div>
+
+<!-- Upload Overlay -->
+<div class="upload-overlay" id="uploadOverlay">
+  <div class="upload-box">
+    <h3>&#128640; Uploading...</h3>
+    <div class="status" id="uploadStatus">Photos upload ho rahi hain...</div>
+    <div class="prog-bg"><div class="prog-bar" id="uploadBar" style="width:0%"></div></div>
+    <div class="detail" id="uploadDetail"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
 // ============================================================
 // State
 // ============================================================
-let schoolData = {};
-let photoFiles = { 1: [], 2: [], 3: [] }; // stores File objects
-
-// ============================================================
-// Step Navigation
-// ============================================================
-function goStep(n) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  document.getElementById('step' + n).classList.add('active');
-  updateProgress(n);
-  window.scrollTo(0, 0);
-}
-
-function goBack(fromStep) {
-  if (fromStep === 1) goStep(1);
-  else goStep(fromStep);
-}
-
-function updateProgress(step) {
-  const wrap = document.getElementById('progressWrap');
-  const pcts = { 1: 0, 2: 20, 3: 50, 4: 75, 5: 90, 6: 100 };
-
-  if (step === 1) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-
-  document.getElementById('progressBar').style.width = (pcts[step] || 0) + '%';
-  const labels = ['pl1','pl2','pl3','pl4','pl5'];
-  labels.forEach((id, i) => {
-    const el = document.getElementById(id);
-    el.classList.remove('active');
-    if (i === step - 2) el.classList.add('active');
-  });
-}
+let schoolData    = {};
+let submissions   = [];    // from server
+let selectedActNum = 1;
+let photoFiles    = [];
 
 // ============================================================
 // Login
 // ============================================================
 function doLogin() {
   const udise = document.getElementById('udiseInput').value.trim();
-  const alertEl = document.getElementById('loginAlert');
-  alertEl.classList.remove('show');
-
-  if (!udise || udise.length < 9) {
-    showAlert('loginAlert', 'Kripya valid UDISE Code daalen (9-11 digits).');
-    return;
-  }
+  if (!udise || udise.length < 9) { showAlert('loginAlert', 'Kripya valid UDISE Code daalen (9-11 digits).'); return; }
 
   const btn = document.getElementById('loginBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Searching...';
+  btn.innerHTML = '<span class="spinner"></span>Verifying...';
 
   google.script.run
-    .withSuccessHandler(function(result) {
-      btn.disabled = false;
-      btn.innerHTML = 'Login &rarr;';
-      if (result.success) {
-        schoolData = result.data;
-        fillSchoolInfo(result.data);
-        goStep(2);
+    .withSuccessHandler(function(res) {
+      btn.disabled = false; btn.innerHTML = 'Login &amp; Continue &rarr;';
+      if (res.success) {
+        schoolData  = res.data;
+        submissions = res.submissions || [];
+        fillSchoolInfo(res.data);
+        buildActTabs();
+        renderPrevTable();
+        document.getElementById('loginPage').style.display  = 'none';
+        document.getElementById('dashboard').style.display  = 'block';
       } else {
-        showAlert('loginAlert', result.message);
+        showAlert('loginAlert', res.message);
       }
     })
     .withFailureHandler(function(err) {
-      btn.disabled = false;
-      btn.innerHTML = 'Login &rarr;';
+      btn.disabled = false; btn.innerHTML = 'Login &amp; Continue &rarr;';
       showAlert('loginAlert', 'Error: ' + err.message);
     })
     .getSchoolData(udise);
 }
+document.getElementById('udiseInput').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
+function logOut() {
+  schoolData = {}; submissions = []; photoFiles = [];
+  document.getElementById('udiseInput').value = '';
+  document.getElementById('loginPage').style.display  = 'flex';
+  document.getElementById('dashboard').style.display  = 'none';
+  clearForm();
+}
+
+// ============================================================
+// Fill School Info
+// ============================================================
 function fillSchoolInfo(d) {
-  document.getElementById('si_udise').textContent = d.udise;
-  document.getElementById('si_district').textContent = d.district;
-  document.getElementById('si_school').textContent = d.schoolName;
+  document.getElementById('si_udise').textContent     = d.udise;
+  document.getElementById('si_district').textContent  = d.district;
+  document.getElementById('si_school').textContent    = d.schoolName;
   document.getElementById('si_principal').textContent = d.principalName;
-  document.getElementById('si_mobile').textContent = d.mobile;
+  document.getElementById('si_mobile').textContent    = d.mobile;
 }
 
-// Enter key on UDISE field
-document.getElementById('udiseInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') doLogin();
-});
+// ============================================================
+// Previous Submissions Table
+// ============================================================
+function renderPrevTable() {
+  const tbody   = document.getElementById('prevTbody');
+  const noPrev  = document.getElementById('noPrev');
+  const countEl = document.getElementById('prevCount');
+  tbody.innerHTML = '';
 
-// ============================================================
-// Photo Handling
-// ============================================================
-function handlePhotos(actNum, input) {
-  const files = Array.from(input.files);
-  // Merge with existing (avoid duplicates by name)
-  const existing = photoFiles[actNum];
-  files.forEach(f => {
-    if (!existing.find(e => e.name === f.name && e.size === f.size)) {
-      existing.push(f);
-    }
+  if (!submissions || submissions.length === 0) {
+    noPrev.style.display  = 'block';
+    countEl.textContent   = '';
+    return;
+  }
+  noPrev.style.display = 'none';
+  countEl.textContent  = submissions.length + ' activity submitted';
+
+  const colors = ['', 'a1', 'a2', 'a3', 'a4'];
+  submissions.forEach(s => {
+    const n   = parseInt(s.activityNum) || 1;
+    const cls = colors[Math.min(n, 4)] || 'a4';
+    const tr  = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="act-badge ${cls}">Act ${n}</span></td>
+      <td><strong>${esc(s.name)}</strong></td>
+      <td>${esc(s.date)}</td>
+      <td>${s.boys}</td>
+      <td>${s.girls}</td>
+      <td>${s.teachers}</td>
+      <td><strong>${s.total}</strong></td>
+      <td>${s.photoCount} photo${s.photoCount !== 1 ? 's' : ''}</td>
+      <td>${s.folderUrl ? '<a href="' + esc(s.folderUrl) + '" target="_blank" class="folder-link">&#128193; View</a>' : '-'}</td>
+      <td style="font-size:0.75rem;color:var(--muted);">${esc(s.timestamp)}</td>
+    `;
+    tbody.appendChild(tr);
   });
-  renderPreviews(actNum);
-  input.value = ''; // reset so same file can be added again if needed
 }
 
-function removePhoto(actNum, idx) {
-  photoFiles[actNum].splice(idx, 1);
-  renderPreviews(actNum);
+// ============================================================
+// Activity Tabs
+// ============================================================
+function buildActTabs() {
+  const container = document.getElementById('actTabs');
+  container.innerHTML = '';
+
+  // Get set of submitted activity numbers
+  const submittedNums = new Set(submissions.map(s => parseInt(s.activityNum) || 0));
+  const maxSubmitted  = submittedNums.size > 0 ? Math.max(...submittedNums) : 0;
+
+  // Always show 1, 2, 3. If all 3 done, also show next slot.
+  const maxTab = Math.max(3, maxSubmitted + 1);
+
+  for (let i = 1; i <= maxTab; i++) {
+    const isDone = submittedNums.has(i);
+    const btn = document.createElement('button');
+    btn.className = 'act-tab' + (isDone ? ' done' : '') + (i === selectedActNum ? ' selected' : '');
+    btn.dataset.num = i;
+    btn.innerHTML = (isDone ? '<span class="tick">&#10003;</span> ' : '') + 'Activity ' + i;
+    btn.onclick = function() { selectActTab(i); };
+    container.appendChild(btn);
+  }
+
+  // Add "+" button if maxTab is already filled
+  if (submittedNums.has(maxTab)) {
+    const addBtn = document.createElement('button');
+    addBtn.className = 'act-tab-add';
+    addBtn.innerHTML = '&#43; Add Activity ' + (maxTab + 1);
+    addBtn.onclick = function() {
+      selectedActNum = maxTab + 1;
+      buildActTabs();
+      clearForm();
+    };
+    container.appendChild(addBtn);
+  }
+
+  // Auto-select first unsubmitted
+  if (!submittedNums.has(selectedActNum)) {
+    // keep selectedActNum as is
+  } else {
+    // find first unsubmitted
+    let found = false;
+    for (let i = 1; i <= maxTab; i++) {
+      if (!submittedNums.has(i)) { selectedActNum = i; found = true; break; }
+    }
+    if (!found) selectedActNum = maxTab + 1;
+  }
+
+  // Highlight selected
+  container.querySelectorAll('.act-tab').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.num) === selectedActNum);
+  });
 }
 
-function renderPreviews(actNum) {
-  const grid = document.getElementById('a' + actNum + '_preview');
-  const countEl = document.getElementById('a' + actNum + '_count');
-  const files = photoFiles[actNum];
+function selectActTab(n) {
+  selectedActNum = n;
+  document.querySelectorAll('.act-tab').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.num) === n);
+  });
+  clearForm();
+  hideAlert('formAlert');
+}
 
+// ============================================================
+// Photos
+// ============================================================
+function handlePhotos(input) {
+  Array.from(input.files).forEach(f => {
+    if (!photoFiles.find(e => e.name === f.name && e.size === f.size)) photoFiles.push(f);
+  });
+  input.value = '';
+  renderPreviews();
+}
+
+function removePhoto(idx) { photoFiles.splice(idx, 1); renderPreviews(); }
+
+function renderPreviews() {
+  const grid     = document.getElementById('previewGrid');
+  const countEl  = document.getElementById('photoCount');
   grid.innerHTML = '';
-  files.forEach((file, i) => {
+  const n = photoFiles.length;
+
+  photoFiles.forEach((file, i) => {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = e => {
       const item = document.createElement('div');
       item.className = 'preview-item';
-      item.innerHTML = '<img src="' + e.target.result + '" alt="photo">' +
-        '<button class="remove-btn" onclick="removePhoto(' + actNum + ',' + i + ')">&#x2715;</button>';
+      item.innerHTML = `<img src="${e.target.result}" alt="photo">
+        <button class="rm-btn" onclick="removePhoto(${i})">&#x2715;</button>`;
       grid.appendChild(item);
     };
     reader.readAsDataURL(file);
   });
 
-  const n = files.length;
-  if (n === 0) {
-    countEl.textContent = '';
-    countEl.className = 'photo-count';
-  } else if (n < 3) {
-    countEl.textContent = n + ' photo(s) selected — Kam se kam 3 photos zaroori hain.';
-    countEl.className = 'photo-count warn';
-  } else {
-    countEl.textContent = n + ' photos selected ✓';
-    countEl.className = 'photo-count ok';
-  }
+  if (n === 0)      { countEl.textContent = ''; countEl.className = 'photo-count'; }
+  else if (n < 3)   { countEl.textContent = n + ' photo(s) — Minimum 3 zaroori hain'; countEl.className = 'photo-count warn'; }
+  else              { countEl.textContent = n + ' photos selected ✓'; countEl.className = 'photo-count ok'; }
 }
 
 // ============================================================
-// Validation
+// Submit
 // ============================================================
-function validateActivity(n) {
-  const name = document.getElementById('a' + n + '_name').value.trim();
-  const date = document.getElementById('a' + n + '_date').value;
-  const boys = document.getElementById('a' + n + '_boys').value;
-  const girls = document.getElementById('a' + n + '_girls').value;
-  const teachers = document.getElementById('a' + n + '_teachers').value;
-  const photos = photoFiles[n];
-  const alertId = 'act' + n + 'Alert';
+async function submitActivity() {
+  hideAlert('formAlert');
+  const name     = document.getElementById('a_name').value.trim();
+  const date     = document.getElementById('a_date').value;
+  const boys     = document.getElementById('a_boys').value;
+  const girls    = document.getElementById('a_girls').value;
+  const teachers = document.getElementById('a_teachers').value;
 
-  if (!name) { showAlert(alertId, 'Activity Name khali nahi chhod sakte.'); return false; }
-  if (!date) { showAlert(alertId, 'Activity Date select karein.'); return false; }
-  if (boys === '' && girls === '') { showAlert(alertId, 'Students ki sankhya darj karein.'); return false; }
-  if (teachers === '') { showAlert(alertId, 'Teachers ki sankhya darj karein.'); return false; }
-  if (photos.length < 3) { showAlert(alertId, 'Minimum 3 photos upload karni hain. Abhi ' + photos.length + ' selected hain.'); return false; }
+  if (!name)     { showAlert('formAlert', 'Activity Name khali nahi chhod sakte.'); return; }
+  if (!date)     { showAlert('formAlert', 'Activity Date select karein.'); return; }
+  if (boys === '' && girls === '') { showAlert('formAlert', 'Students ki sankhya darj karein.'); return; }
+  if (teachers === '') { showAlert('formAlert', 'Teachers ki sankhya darj karein.'); return; }
+  if (photoFiles.length < 3) { showAlert('formAlert', 'Minimum 3 photos upload karni hain. Abhi ' + photoFiles.length + ' selected hain.'); return; }
 
-  document.getElementById(alertId).classList.remove('show');
-  return true;
-}
+  // Show overlay
+  const overlay = document.getElementById('uploadOverlay');
+  overlay.classList.add('show');
+  document.getElementById('submitBtn').disabled = true;
 
-function nextActivity(current) {
-  if (!validateActivity(current)) return;
-  goStep(current + 2); // step2=act1, step3=act2, step4=act3
-}
+  const total    = photoFiles.length;
+  let done       = 0;
+  const photoUrls = [];
 
-// ============================================================
-// Submit & Upload
-// ============================================================
-async function submitForm() {
-  if (!validateActivity(3)) return;
-  goStep(5); // uploading screen
-
-  const allPhotos = [];
-  for (let act = 1; act <= 3; act++) {
-    const actName = document.getElementById('a' + act + '_name').value.trim();
-    for (let i = 0; i < photoFiles[act].length; i++) {
-      allPhotos.push({ act, actName, file: photoFiles[act][i], idx: i });
-    }
-  }
-
-  const total = allPhotos.length;
-  let done = 0;
-  const photoUrls = { 1: [], 2: [], 3: [] };
-
-  for (const item of allPhotos) {
-    document.getElementById('uploadStatus').textContent =
-      'Activity ' + item.act + ' - Photo ' + (item.idx + 1) + ' upload ho rahi hai...';
-    document.getElementById('uploadDetail').textContent =
-      done + ' / ' + total + ' photos complete';
-    document.getElementById('uploadBar').style.width = Math.round((done / total) * 85) + '%';
+  for (let i = 0; i < photoFiles.length; i++) {
+    document.getElementById('uploadStatus').textContent = 'Photo ' + (i + 1) + ' of ' + total + ' upload ho rahi hai...';
+    document.getElementById('uploadDetail').textContent = done + ' / ' + total + ' complete';
+    document.getElementById('uploadBar').style.width   = Math.round((done / total) * 85) + '%';
 
     try {
-      const { base64, mimeType } = await compressAndEncode(item.file);
-      const url = await uploadPhotoToServer(
+      const { base64, mimeType } = await compressPhoto(photoFiles[i]);
+      const url = await uploadSinglePhoto(
         base64, mimeType,
-        'act' + item.act + '_' + item.idx + '_' + Date.now() + '.jpg',
-        schoolData.district, schoolData.udise, schoolData.schoolName, item.actName
+        'act' + selectedActNum + '_' + i + '_' + Date.now() + '.jpg',
+        schoolData.district, schoolData.udise, schoolData.schoolName, name
       );
-      if (url) photoUrls[item.act].push(url);
-    } catch (e) {
-      console.error('Photo upload failed:', e);
-    }
+      if (url) photoUrls.push(url);
+    } catch (e) { console.error(e); }
     done++;
   }
 
   document.getElementById('uploadStatus').textContent = 'Data save ho raha hai...';
-  document.getElementById('uploadBar').style.width = '95%';
+  document.getElementById('uploadBar').style.width    = '95%';
 
-  // Save form data
   const formData = {
-    udise: schoolData.udise,
-    district: schoolData.district,
-    schoolName: schoolData.schoolName,
+    udise:         schoolData.udise,
+    district:      schoolData.district,
+    schoolName:    schoolData.schoolName,
     principalName: schoolData.principalName,
-    mobile: schoolData.mobile,
-    activity1: {
-      name: document.getElementById('a1_name').value.trim(),
-      date: document.getElementById('a1_date').value,
-      boys: document.getElementById('a1_boys').value,
-      girls: document.getElementById('a1_girls').value,
-      teachers: document.getElementById('a1_teachers').value,
-      photoUrls: photoUrls[1]
-    },
-    activity2: {
-      name: document.getElementById('a2_name').value.trim(),
-      date: document.getElementById('a2_date').value,
-      boys: document.getElementById('a2_boys').value,
-      girls: document.getElementById('a2_girls').value,
-      teachers: document.getElementById('a2_teachers').value,
-      photoUrls: photoUrls[2]
-    },
-    activity3: {
-      name: document.getElementById('a3_name').value.trim(),
-      date: document.getElementById('a3_date').value,
-      boys: document.getElementById('a3_boys').value,
-      girls: document.getElementById('a3_girls').value,
-      teachers: document.getElementById('a3_teachers').value,
-      photoUrls: photoUrls[3]
-    }
+    mobile:        schoolData.mobile,
+    activityNum:   selectedActNum,
+    activityName:  name,
+    activityDate:  date,
+    boys, girls, teachers,
+    photoUrls
   };
 
   google.script.run
-    .withSuccessHandler(function(result) {
+    .withSuccessHandler(function(res) {
+      overlay.classList.remove('show');
+      document.getElementById('submitBtn').disabled = false;
       document.getElementById('uploadBar').style.width = '100%';
-      if (result.success) {
-        document.getElementById('successRef').innerHTML =
-          '<strong>School:</strong> ' + schoolData.schoolName + '<br>' +
-          '<strong>UDISE:</strong> ' + schoolData.udise + '<br>' +
-          '<strong>Photos Uploaded:</strong> ' + done;
-        goStep(6);
+
+      if (res.success) {
+        // Add to local submissions list and refresh
+        submissions.push({
+          timestamp:   new Date().toLocaleString('en-IN'),
+          activityNum: selectedActNum,
+          name, date, boys, girls, teachers,
+          total:       (parseInt(boys) || 0) + (parseInt(girls) || 0),
+          photoCount:  photoUrls.length,
+          folderUrl:   ''
+        });
+        clearForm();
+        buildActTabs();
+        renderPrevTable();
+        showToast('Activity ' + selectedActNum + ' successfully submitted!');
       } else {
-        alert('Save karne mein error: ' + result.message);
-        goStep(4);
+        showAlert('formAlert', 'Save error: ' + res.message);
       }
     })
     .withFailureHandler(function(err) {
-      alert('Error: ' + err.message);
-      goStep(4);
+      overlay.classList.remove('show');
+      document.getElementById('submitBtn').disabled = false;
+      showAlert('formAlert', 'Error: ' + err.message);
     })
-    .saveFormData(formData);
+    .saveActivityData(formData);
 }
 
 // ============================================================
-// Compress image and convert to base64
+// Compress + base64
 // ============================================================
-function compressAndEncode(file) {
+function compressPhoto(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = e => {
       const img = new Image();
-      img.onload = function() {
-        const canvas = document.createElement('canvas');
-        const MAX_W = 1280, MAX_H = 960;
+      img.onload = () => {
+        const MAX = 1280;
         let w = img.width, h = img.height;
-        if (w > MAX_W) { h = h * MAX_W / w; w = MAX_W; }
-        if (h > MAX_H) { w = w * MAX_H / h; h = MAX_H; }
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-        const base64 = dataUrl.split(',')[1];
-        resolve({ base64, mimeType: 'image/jpeg' });
+        if (w > MAX) { h = h * MAX / w; w = MAX; }
+        if (h > MAX) { w = w * MAX / h; h = MAX; }
+        const cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = cv.toDataURL('image/jpeg', 0.75);
+        resolve({ base64: dataUrl.split(',')[1], mimeType: 'image/jpeg' });
       };
       img.onerror = reject;
       img.src = e.target.result;
@@ -850,49 +718,44 @@ function compressAndEncode(file) {
   });
 }
 
-// ============================================================
-// Upload single photo via Apps Script
-// ============================================================
-function uploadPhotoToServer(base64, mimeType, fileName, district, udise, schoolName, activityName) {
-  return new Promise((resolve, reject) => {
+function uploadSinglePhoto(base64, mimeType, fileName, district, udise, schoolName, actName) {
+  return new Promise((resolve) => {
     google.script.run
-      .withSuccessHandler(function(result) {
-        if (result.success) resolve(result.url);
-        else resolve(null);
-      })
-      .withFailureHandler(function(err) {
-        resolve(null); // don't block entire submission on single photo failure
-      })
-      .uploadPhoto(base64, mimeType, fileName, district, udise, schoolName, activityName);
+      .withSuccessHandler(r => resolve(r.success ? r.url : null))
+      .withFailureHandler(() => resolve(null))
+      .uploadPhoto(base64, mimeType, fileName, district, udise, schoolName, actName);
   });
 }
 
 // ============================================================
 // Helpers
 // ============================================================
-function showAlert(id, msg) {
-  const el = document.getElementById(id);
-  el.textContent = msg;
-  el.classList.add('show');
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function resetForm() {
-  photoFiles = { 1: [], 2: [], 3: [] };
-  schoolData = {};
-  ['a1_name','a1_date','a1_boys','a1_girls','a1_teachers',
-   'a2_name','a2_date','a2_boys','a2_girls','a2_teachers',
-   'a3_name','a3_date','a3_boys','a3_girls','a3_teachers'].forEach(id => {
+function clearForm() {
+  ['a_name', 'a_date', 'a_boys', 'a_girls', 'a_teachers'].forEach(id => {
     document.getElementById(id).value = '';
   });
-  ['a1_preview','a2_preview','a3_preview'].forEach(id => {
-    document.getElementById(id).innerHTML = '';
-  });
-  ['a1_count','a2_count','a3_count'].forEach(id => {
-    document.getElementById(id).textContent = '';
-  });
-  document.getElementById('udiseInput').value = '';
-  goStep(1);
+  photoFiles = [];
+  document.getElementById('previewGrid').innerHTML = '';
+  document.getElementById('photoCount').textContent = '';
+  document.getElementById('photoInput').value = '';
+}
+
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function hideAlert(id) { document.getElementById(id).classList.remove('show'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = '✓  ' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
 </body>

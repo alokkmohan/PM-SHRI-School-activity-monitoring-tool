@@ -1,85 +1,113 @@
 // ============================================================
 // PM SHRI School Activity Monitoring - Google Apps Script
-// Google Sheet ID - Schools master data
 // ============================================================
 
-const SHEET_ID = '1Xru8dZVrxCQO2e71oKhLr_ISVPJHGKBZlznK1zSxZj8';
-const SCHOOLS_SHEET_NAME = 'Sheet1';
-const RESPONSES_SHEET_NAME = 'Responses';
-const DATA_START_ROW = 4; // Actual school data starts at row 4
-const PHOTOS_FOLDER_ID = '1LJAqwfPqcCBO77GLFzL0SrZqhum5PptJ'; // PM SHRI Photos Drive folder
+const SHEET_ID        = '1Xru8dZVrxCQO2e71oKhLr_ISVPJHGKBZlznK1zSxZj8';
+const SCHOOLS_SHEET   = 'Sheet1';
+const RESPONSES_SHEET = 'Responses';
+const DATA_START_ROW  = 4;
+const PHOTOS_FOLDER_ID = '1LJAqwfPqcCBO77GLFzL0SrZqhum5PptJ';
 
-// ---- Serve the Web App ----
+// ---- Serve Web App ----
 function doGet() {
   return HtmlService.createTemplateFromFile('Index')
     .evaluate()
-    .setTitle('PM SHRI School Activity Monitoring')
+    .setTitle('PM SHRI School Activity Monitoring Dashboard')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
-// ---- Lookup School by UDISE Code ----
+// ---- Normalize UDISE (strip leading zeros and .0) ----
+function normUdise(v) {
+  return String(v).trim().replace(/\.0$/, '').replace(/^0+/, '') || '0';
+}
+
+// ---- Lookup School + Previous Submissions ----
 function getSchoolData(udiseCode) {
   try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(SCHOOLS_SHEET_NAME);
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName(SCHOOLS_SHEET);
     const lastRow = sheet.getLastRow();
 
     if (lastRow < DATA_START_ROW) {
       return { success: false, message: 'Sheet mein data nahi mila.' };
     }
 
-    const data = sheet.getRange(DATA_START_ROW, 1, lastRow - DATA_START_ROW + 1, 6).getValues();
-    const udiseStr = String(udiseCode).trim().replace(/\.0$/, '');
+    const data     = sheet.getRange(DATA_START_ROW, 1, lastRow - DATA_START_ROW + 1, 6).getValues();
+    const udiseNorm = normUdise(udiseCode);
 
     for (let i = 0; i < data.length; i++) {
-      const rowUdise = String(data[i][2]).trim().replace(/\.0$/, '');
-      if (rowUdise === udiseStr) {
-        return {
-          success: true,
-          data: {
-            slNo: data[i][0],
-            district: String(data[i][1]).trim(),
-            udise: rowUdise,
-            schoolName: String(data[i][3]).trim(),
-            principalName: String(data[i][4]).trim(),
-            mobile: String(data[i][5]).trim().replace(/\.0$/, '')
-          }
+      if (normUdise(data[i][2]) === udiseNorm) {
+        const displayUdise = String(data[i][2]).trim().replace(/\.0$/, '').padStart(11, '0');
+        const schoolInfo = {
+          slNo:          data[i][0],
+          district:      String(data[i][1]).trim(),
+          udise:         displayUdise,
+          schoolName:    String(data[i][3]).trim(),
+          principalName: String(data[i][4]).trim(),
+          mobile:        String(data[i][5]).trim().replace(/\.0$/, '')
         };
+        const submissions = getPreviousSubmissions(displayUdise);
+        return { success: true, data: schoolInfo, submissions: submissions };
       }
     }
-    return { success: false, message: 'UDISE Code nahi mila. Kripya sahi code daalen.' };
+    return { success: false, message: 'UDISE Code nahi mila. Kripya sahi 11-digit code daalen.' };
   } catch (err) {
     return { success: false, message: 'Server error: ' + err.message };
   }
 }
 
+// ---- Fetch Previous Submissions for this School ----
+function getPreviousSubmissions(udise) {
+  try {
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName(RESPONSES_SHEET);
+    if (!sheet || sheet.getLastRow() < 2) return [];
+
+    const lastRow = sheet.getLastRow();
+    // Columns: Timestamp(0) | District(1) | School(2) | UDISE(3) | Principal(4) | Mobile(5) |
+    //          ActNo(6) | ActName(7) | ActDate(8) | Boys(9) | Girls(10) | Teachers(11) |
+    //          Total(12) | PhotoLinks(13) | FolderLink(14)
+    const data    = sheet.getRange(2, 1, lastRow - 1, 15).getValues();
+    const norm    = normUdise;
+    const udiseN  = norm(udise);
+
+    return data
+      .filter(row => norm(row[3]) === udiseN && row[7]) // col 3 = UDISE, col 7 = Activity Name
+      .map(row => ({
+        timestamp:   row[0] ? Utilities.formatDate(new Date(row[0]), 'Asia/Kolkata', 'dd-MMM-yyyy HH:mm') : '',
+        activityNum: row[6],
+        name:        row[7],
+        date:        row[8] ? Utilities.formatDate(new Date(row[8]), 'Asia/Kolkata', 'dd-MMM-yyyy') : '',
+        boys:        row[9],
+        girls:       row[10],
+        teachers:    row[11],
+        total:       row[12],
+        photoCount:  String(row[13]).split('\n').filter(x => x.trim()).length,
+        folderUrl:   row[14] || ''
+      }));
+  } catch (e) {
+    return [];
+  }
+}
+
 // ---- Upload Single Photo to Drive ----
-// Folder structure: PM SHRI School Photos / District / UDISE_SchoolName / ActivityName /
+// Folder: PM SHRI Photos / District / UDISE_SchoolName / ActivityName /
 function uploadPhoto(base64Data, mimeType, fileName, district, udise, schoolName, activityName) {
   try {
-    // Use the designated PM SHRI Photos folder
-    const mainFolder = DriveApp.getFolderById(PHOTOS_FOLDER_ID);
+    const mainFolder     = DriveApp.getFolderById(PHOTOS_FOLDER_ID);
+    const districtFolder = getOrCreateSubFolder(mainFolder, sanitize(district));
+    const schoolFolder   = getOrCreateSubFolder(districtFolder, sanitize(udise + '_' + schoolName));
+    const actFolder      = getOrCreateSubFolder(schoolFolder, sanitize(activityName));
 
-    // Level 2: District
-    const districtFolder = getOrCreateSubFolder(mainFolder, sanitizeName(district));
-
-    // Level 3: UDISE_SchoolName
-    const schoolFolderName = sanitizeName(udise + '_' + schoolName);
-    const schoolFolder = getOrCreateSubFolder(districtFolder, schoolFolderName);
-
-    // Level 4: Activity Name
-    const actFolder = getOrCreateSubFolder(schoolFolder, sanitizeName(activityName));
-
-    // Create file
     const bytes = Utilities.base64Decode(base64Data);
-    const blob = Utilities.newBlob(bytes, mimeType, fileName);
-    const file = actFolder.createFile(blob);
+    const blob  = Utilities.newBlob(bytes, mimeType, fileName);
+    const file  = actFolder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
     return {
       success: true,
-      url: 'https://drive.google.com/file/d/' + file.getId() + '/view',
+      url:    'https://drive.google.com/file/d/' + file.getId() + '/view',
       fileId: file.getId()
     };
   } catch (err) {
@@ -87,59 +115,59 @@ function uploadPhoto(base64Data, mimeType, fileName, district, udise, schoolName
   }
 }
 
-// ---- Save Final Form Data to Responses Sheet ----
-function saveFormData(formData) {
+// ---- Save One Activity Submission ----
+// Sheet column order:
+// Timestamp | District | School Name | UDISE Code | Principal Name | Mobile No. |
+// Activity No. | Activity Name | Activity Date | Boys | Girls | Teachers | Total Students |
+// Photo Links | Photos Folder Link
+function saveActivityData(formData) {
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
-    let sheet = ss.getSheetByName(RESPONSES_SHEET_NAME);
+    let sheet = ss.getSheetByName(RESPONSES_SHEET);
 
     if (!sheet) {
-      sheet = ss.insertSheet(RESPONSES_SHEET_NAME);
+      sheet = ss.insertSheet(RESPONSES_SHEET);
       const headers = [
-        'Timestamp', 'UDISE Code', 'District', 'School Name', 'Principal Name', 'Mobile No.',
-        'Act1 Name', 'Act1 Date', 'Act1 Boys', 'Act1 Girls', 'Act1 Teachers', 'Act1 Total', 'Act1 Photo Links',
-        'Act2 Name', 'Act2 Date', 'Act2 Boys', 'Act2 Girls', 'Act2 Teachers', 'Act2 Total', 'Act2 Photo Links',
-        'Act3 Name', 'Act3 Date', 'Act3 Boys', 'Act3 Girls', 'Act3 Teachers', 'Act3 Total', 'Act3 Photo Links'
+        'Timestamp', 'District', 'School Name', 'UDISE Code', 'Principal Name', 'Mobile No.',
+        'Activity No.', 'Activity Name', 'Activity Date',
+        'Boys', 'Girls', 'Teachers', 'Total Students',
+        'Photo Links', 'Photos Folder Link'
       ];
       sheet.appendRow(headers);
       sheet.getRange(1, 1, 1, headers.length)
-        .setBackground('#1a73e8')
-        .setFontColor('white')
-        .setFontWeight('bold');
+        .setBackground('#1a73e8').setFontColor('white').setFontWeight('bold');
       sheet.setFrozenRows(1);
     }
 
-    const row = [
+    const boys     = parseInt(formData.boys)     || 0;
+    const girls    = parseInt(formData.girls)    || 0;
+    const teachers = parseInt(formData.teachers) || 0;
+
+    // Get the activity folder URL in Drive
+    let folderUrl = '';
+    try {
+      const main  = DriveApp.getFolderById(PHOTOS_FOLDER_ID);
+      const dist  = getOrCreateSubFolder(main,  sanitize(formData.district));
+      const sch   = getOrCreateSubFolder(dist,  sanitize(formData.udise + '_' + formData.schoolName));
+      const act   = getOrCreateSubFolder(sch,   sanitize(formData.activityName));
+      folderUrl   = 'https://drive.google.com/drive/folders/' + act.getId();
+    } catch (e) { /* non-fatal */ }
+
+    sheet.appendRow([
       new Date(),
-      formData.udise,
       formData.district,
       formData.schoolName,
+      formData.udise,
       formData.principalName,
-      formData.mobile
-    ];
-
-    for (let i = 1; i <= 3; i++) {
-      const act = formData['activity' + i] || {};
-      const boys = parseInt(act.boys) || 0;
-      const girls = parseInt(act.girls) || 0;
-      const teachers = parseInt(act.teachers) || 0;
-      row.push(
-        act.name || '',
-        act.date || '',
-        boys,
-        girls,
-        teachers,
-        boys + girls,
-        (act.photoUrls || []).join('\n')
-      );
-    }
-
-    sheet.appendRow(row);
-
-    // Auto-resize columns on first few submissions
-    if (sheet.getLastRow() <= 5) {
-      sheet.autoResizeColumns(1, row.length);
-    }
+      formData.mobile,
+      formData.activityNum,
+      formData.activityName,
+      formData.activityDate,
+      boys, girls, teachers,
+      boys + girls,
+      (formData.photoUrls || []).join('\n'),
+      folderUrl
+    ]);
 
     return { success: true };
   } catch (err) {
@@ -147,14 +175,11 @@ function saveFormData(formData) {
   }
 }
 
-// ---- Helper: Get or Create Subfolder ----
+// ---- Helpers ----
 function getOrCreateSubFolder(parent, name) {
-  const folders = parent.getFoldersByName(name);
-  if (folders.hasNext()) return folders.next();
-  return parent.createFolder(name);
+  const it = parent.getFoldersByName(name);
+  return it.hasNext() ? it.next() : parent.createFolder(name);
 }
-
-// ---- Helper: Sanitize folder/file names ----
-function sanitizeName(name) {
-  return String(name).replace(/[\/\\:*?"<>|]/g, '_').trim().substring(0, 100);
+function sanitize(s) {
+  return String(s).replace(/[\/\\:*?"<>|]/g, '_').trim().substring(0, 80);
 }
