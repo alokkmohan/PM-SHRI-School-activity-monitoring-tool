@@ -290,7 +290,6 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
             <th>Girls</th>
             <th>Teachers</th>
             <th>Total</th>
-            <th>Photos</th>
             <th>Drive Folder</th>
             <th>Submitted On</th>
           </tr>
@@ -478,8 +477,7 @@ function renderPrevTable() {
       <td>${s.girls}</td>
       <td>${s.teachers}</td>
       <td><strong>${s.total}</strong></td>
-      <td>${s.photoCount} photo${s.photoCount !== 1 ? 's' : ''}</td>
-      <td>${s.folderUrl ? '<a href="' + esc(s.folderUrl) + '" target="_blank" class="folder-link">&#128193; View</a>' : '-'}</td>
+      <td>${s.folderUrl ? '<a href="' + esc(s.folderUrl) + '" target="_blank" class="folder-link">&#128193; View Folder</a>' : '-'}</td>
       <td style="font-size:0.75rem;color:var(--muted);">${esc(s.timestamp)}</td>
     `;
     tbody.appendChild(tr);
