@@ -1,0 +1,12 @@
+# Excel data file (contains sensitive school/principal data)
+*.xlsx
+*.xls
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+*.swp

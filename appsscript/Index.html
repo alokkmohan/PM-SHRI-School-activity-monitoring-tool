@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM SHRI School Activity Monitoring</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    color: #2d3748;
+    min-height: 100vh;
+  }
+
+  /* ---- Header ---- */
+  .header {
+    background: linear-gradient(135deg, #1a237e 0%, #1565c0 100%);
+    color: white;
+    padding: 14px 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; }
+  .header p { font-size: 0.8rem; opacity: 0.85; margin-top: 2px; }
+
+  /* ---- Progress Bar ---- */
+  .progress-wrap {
+    background: #1565c0;
+    padding: 0 20px 14px;
+  }
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .progress-labels span {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.75);
+    flex: 1;
+    text-align: center;
+  }
+  .progress-labels span.active { color: #fff; font-weight: 700; }
+  .progress-bar-bg {
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    height: 8px;
+  }
+  .progress-bar {
+    height: 8px;
+    border-radius: 10px;
+    background: #ffeb3b;
+    transition: width 0.4s ease;
+  }
+
+  /* ---- Main Container ---- */
+  .container {
+    max-width: 680px;
+    margin: 24px auto;
+    padding: 0 16px 40px;
+  }
+
+  /* ---- Card ---- */
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a237e;
+    border-left: 4px solid #1565c0;
+    padding-left: 10px;
+    margin-bottom: 18px;
+  }
+
+  /* ---- Form Fields ---- */
+  .field { margin-bottom: 16px; }
+  label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+  }
+  label .req { color: #e53e3e; }
+  input[type="text"], input[type="number"], input[type="date"], input[type="tel"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #2d3748;
+    background: white;
+    transition: border-color 0.2s;
+  }
+  input:focus {
+    outline: none;
+    border-color: #1565c0;
+    box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
+  }
+  input[readonly] {
+    background: #f7fafc;
+    color: #718096;
+    cursor: not-allowed;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 500px) {
+    .field-row { grid-template-columns: 1fr; }
+    .field-row-3 { grid-template-columns: 1fr !important; }
+  }
+  .field-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* ---- Info Box ---- */
+  .info-box {
+    background: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    color: #2e7d32;
+  }
+  .info-box strong { display: block; margin-bottom: 4px; }
+
+  .info-row { display: flex; margin-bottom: 6px; }
+  .info-label { min-width: 130px; font-weight: 600; color: #4a5568; font-size: 0.82rem; }
+  .info-value { color: #2d3748; font-size: 0.85rem; }
+
+  /* ---- Photo Upload ---- */
+  .photo-upload-area {
+    border: 2px dashed #cbd5e0;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .photo-upload-area:hover { border-color: #1565c0; background: #f0f7ff; }
+  .photo-upload-area input[type="file"] {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer;
+  }
+  .upload-icon { font-size: 2rem; color: #a0aec0; margin-bottom: 8px; }
+  .upload-text { font-size: 0.85rem; color: #718096; }
+  .upload-text strong { color: #1565c0; }
+
+  .photo-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .preview-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    background: #f7fafc;
+  }
+  .preview-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .preview-item .remove-btn {
+    position: absolute;
+    top: 4px; right: 4px;
+    background: rgba(229,62,62,0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px; height: 22px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .photo-count {
+    font-size: 0.8rem;
+    color: #718096;
+    margin-top: 8px;
+  }
+  .photo-count.ok { color: #2e7d32; font-weight: 600; }
+  .photo-count.warn { color: #e53e3e; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: #1565c0;
+    color: white;
+    width: 100%;
+  }
+  .btn-primary:hover { background: #1a237e; }
+  .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
+  .btn-secondary {
+    background: #edf2f7;
+    color: #4a5568;
+  }
+  .btn-secondary:hover { background: #e2e8f0; }
+  .btn-success {
+    background: #2e7d32;
+    color: white;
+    width: 100%;
+  }
+  .btn-success:hover { background: #1b5e20; }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .btn-row .btn-secondary { flex: 0 0 auto; }
+  .btn-row .btn-primary { flex: 1; }
+
+  /* ---- UDISE Login ---- */
+  .login-card {
+    max-width: 420px;
+    margin: 60px auto 0;
+  }
+  .login-logo {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .login-logo .emblem { font-size: 3.5rem; }
+  .login-logo h2 { font-size: 1.1rem; color: #1a237e; font-weight: 700; margin-top: 8px; }
+  .login-logo p { font-size: 0.8rem; color: #718096; }
+
+  .udise-input {
+    font-size: 1.2rem !important;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  .udise-hint { font-size: 0.75rem; color: #718096; text-align: center; margin-top: 4px; }
+
+  /* ---- Error / Alert ---- */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .alert-error { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; }
+  .alert-success { background: #f0fff4; border: 1px solid #9ae6b4; color: #276749; }
+  .alert.show { display: block; }
+
+  /* ---- Upload Progress ---- */
+  .upload-progress {
+    background: white;
+    border-radius: 12px;
+    padding: 30px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    text-align: center;
+  }
+  .upload-progress h3 { color: #1a237e; margin-bottom: 16px; }
+  .upload-status { font-size: 0.85rem; color: #718096; margin-bottom: 12px; }
+  .upload-progress-bar-bg {
+    background: #edf2f7;
+    border-radius: 10px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .upload-progress-bar {
+    height: 10px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #1565c0, #42a5f5);
+    transition: width 0.3s ease;
+  }
+
+  /* ---- Success Screen ---- */
+  .success-screen {
+    text-align: center;
+    padding: 40px 24px;
+  }
+  .success-icon { font-size: 5rem; margin-bottom: 16px; }
+  .success-screen h2 { color: #2e7d32; font-size: 1.4rem; margin-bottom: 8px; }
+  .success-screen p { color: #718096; font-size: 0.9rem; line-height: 1.6; }
+  .success-ref {
+    background: #e8f5e9;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 16px 0;
+    font-size: 0.85rem;
+    color: #2e7d32;
+  }
+
+  /* ---- Steps: hide/show ---- */
+  .step { display: none; }
+  .step.active { display: block; }
+
+  /* ---- Spinner ---- */
+  .spinner {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>&#127979; PM SHRI School Activity Monitoring</h1>
+  <p>Pradhan Mantri Schools for Rising India</p>
+</div>
+
+<div class="progress-wrap" id="progressWrap" style="display:none;">
+  <div class="progress-labels">
+    <span id="pl1">Login</span>
+    <span id="pl2">Activity 1</span>
+    <span id="pl3">Activity 2</span>
+    <span id="pl4">Activity 3</span>
+    <span id="pl5">Submit</span>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ========== STEP 1: UDISE LOGIN ========== -->
+  <div class="step active" id="step1">
+    <div class="card login-card">
+      <div class="login-logo">
+        <div class="emblem">&#127979;</div>
+        <h2>School Login</h2>
+        <p>Apna UDISE Code dalkar login karein</p>
+      </div>
+
+      <div id="loginAlert" class="alert alert-error"></div>
+
+      <div class="field">
+        <label>UDISE Code <span class="req">*</span></label>
+        <input type="tel" id="udiseInput" class="udise-input"
+               placeholder="11 digit code" maxlength="11"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+        <div class="udise-hint">Example: 09151711940</div>
+      </div>
+
+      <button class="btn btn-primary" onclick="doLogin()" id="loginBtn">
+        Login &rarr;
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== STEP 2: SCHOOL INFO + ACTIVITY 1 ========== -->
+  <div class="step" id="step2">
+    <div id="schoolInfoBox" class="card">
+      <div class="card-title">&#127979; School Information</div>
+      <div class="info-row"><div class="info-label">UDISE Code</div><div class="info-value" id="si_udise"></div></div>
+      <div class="info-row"><div class="info-label">District</div><div class="info-value" id="si_district"></div></div>
+      <div class="info-row"><div class="info-label">School Name</div><div class="info-value" id="si_school"></div></div>
+      <div class="info-row"><div class="info-label">Principal Name</div><div class="info-value" id="si_principal"></div></div>
+      <div class="info-row"><div class="info-label">Mobile No.</div><div class="info-value" id="si_mobile"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">&#127775; Activity 1</div>
+      <div id="act1Alert" class="alert alert-error"></div>
+
+      <div class="field">
+        <label>Activity Name <span class="req">*</span></label>
+        <input type="text" id="a1_name" placeholder="Jaise: Plantation Drive, Sports Day, Swachh Bharat...">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Activity Date <span class="req">*</span></label>
+          <input type="date" id="a1_date">
+        </div>
+        <div class="field">
+          <label>Teachers Involved <span class="req">*</span></label>
+          <input type="number" id="a1_teachers" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Boys (Students) <span class="req">*</span></label>
+          <input type="number" id="a1_boys" placeholder="0" min="0">
+        </div>
+        <div class="field">
+          <label>Girls (Students) <span class="req">*</span></label>
+          <input type="number" id="a1_girls" placeholder="0" min="0">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Photos Upload (Minimum 3) <span class="req">*</span></label>
+        <div class="photo-upload-area" onclick="document.getElementById('a1_photos').click()">
+          <input type="file" id="a1_photos" accept="image/*" multiple onchange="handlePhotos(1, this)">
+          <div class="upload-icon">&#128247;</div>
+          <div class="upload-text"><strong>Click to select photos</strong><br>JPG, PNG supported</div>
+        </div>
+        <div class="photo-preview-grid" id="a1_preview"></div>
+        <div class="photo-count" id="a1_count"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goBack(1)">&larr; Back</button>
+        <button class="btn btn-primary" onclick="nextActivity(1)">Next: Activity 2 &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== STEP 3: ACTIVITY 2 ========== -->
+  <div class="step" id="step3">
+    <div class="card">
+      <div class="card-title">&#127775; Activity 2</div>
+      <div id="act2Alert" class="alert alert-error"></div>
+
+      <div class="field">
+        <label>Activity Name <span class="req">*</span></label>
+        <input type="text" id="a2_name" placeholder="Jaise: Science Fair, Cultural Program...">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Activity Date <span class="req">*</span></label>
+          <input type="date" id="a2_date">
+        </div>
+        <div class="field">
+          <label>Teachers Involved <span class="req">*</span></label>
+          <input type="number" id="a2_teachers" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Boys (Students) <span class="req">*</span></label>
+          <input type="number" id="a2_boys" placeholder="0" min="0">
+        </div>
+        <div class="field">
+          <label>Girls (Students) <span class="req">*</span></label>
+          <input type="number" id="a2_girls" placeholder="0" min="0">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Photos Upload (Minimum 3) <span class="req">*</span></label>
+        <div class="photo-upload-area" onclick="document.getElementById('a2_photos').click()">
+          <input type="file" id="a2_photos" accept="image/*" multiple onchange="handlePhotos(2, this)">
+          <div class="upload-icon">&#128247;</div>
+          <div class="upload-text"><strong>Click to select photos</strong><br>JPG, PNG supported</div>
+        </div>
+        <div class="photo-preview-grid" id="a2_preview"></div>
+        <div class="photo-count" id="a2_count"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(2)">&larr; Back</button>
+        <button class="btn btn-primary" onclick="nextActivity(2)">Next: Activity 3 &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== STEP 4: ACTIVITY 3 ========== -->
+  <div class="step" id="step4">
+    <div class="card">
+      <div class="card-title">&#127775; Activity 3</div>
+      <div id="act3Alert" class="alert alert-error"></div>
+
+      <div class="field">
+        <label>Activity Name <span class="req">*</span></label>
+        <input type="text" id="a3_name" placeholder="Jaise: Health Camp, Environment Day...">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Activity Date <span class="req">*</span></label>
+          <input type="date" id="a3_date">
+        </div>
+        <div class="field">
+          <label>Teachers Involved <span class="req">*</span></label>
+          <input type="number" id="a3_teachers" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Boys (Students) <span class="req">*</span></label>
+          <input type="number" id="a3_boys" placeholder="0" min="0">
+        </div>
+        <div class="field">
+          <label>Girls (Students) <span class="req">*</span></label>
+          <input type="number" id="a3_girls" placeholder="0" min="0">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Photos Upload (Minimum 3) <span class="req">*</span></label>
+        <div class="photo-upload-area" onclick="document.getElementById('a3_photos').click()">
+          <input type="file" id="a3_photos" accept="image/*" multiple onchange="handlePhotos(3, this)">
+          <div class="upload-icon">&#128247;</div>
+          <div class="upload-text"><strong>Click to select photos</strong><br>JPG, PNG supported</div>
+        </div>
+        <div class="photo-preview-grid" id="a3_preview"></div>
+        <div class="photo-count" id="a3_count"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(3)">&larr; Back</button>
+        <button class="btn btn-success" onclick="submitForm()">&#10003; Submit Form</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== STEP 5: UPLOADING ========== -->
+  <div class="step" id="step5">
+    <div class="card upload-progress">
+      <h3>&#128640; Uploading...</h3>
+      <div class="upload-status" id="uploadStatus">Photos upload ho rahi hain...</div>
+      <div class="upload-progress-bar-bg">
+        <div class="upload-progress-bar" id="uploadBar" style="width:0%"></div>
+      </div>
+      <div style="margin-top:12px; font-size:0.8rem; color:#a0aec0;" id="uploadDetail"></div>
+    </div>
+  </div>
+
+  <!-- ========== STEP 6: SUCCESS ========== -->
+  <div class="step" id="step6">
+    <div class="card success-screen">
+      <div class="success-icon">&#9989;</div>
+      <h2>Form Successfully Submitted!</h2>
+      <div class="success-ref" id="successRef"></div>
+      <p>Aapka data safaltapurvak save ho gaya hai.<br>
+         Photos Google Drive mein upload ho gayi hain.</p>
+      <br>
+      <button class="btn btn-primary" onclick="resetForm()" style="max-width:260px;margin:0 auto;">
+        Naya Form Bharen
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// State
+// ============================================================
+let schoolData = {};
+let photoFiles = { 1: [], 2: [], 3: [] }; // stores File objects
+
+// ============================================================
+// Step Navigation
+// ============================================================
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  updateProgress(n);
+  window.scrollTo(0, 0);
+}
+
+function goBack(fromStep) {
+  if (fromStep === 1) goStep(1);
+  else goStep(fromStep);
+}
+
+function updateProgress(step) {
+  const wrap = document.getElementById('progressWrap');
+  const pcts = { 1: 0, 2: 20, 3: 50, 4: 75, 5: 90, 6: 100 };
+
+  if (step === 1) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+
+  document.getElementById('progressBar').style.width = (pcts[step] || 0) + '%';
+  const labels = ['pl1','pl2','pl3','pl4','pl5'];
+  labels.forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.classList.remove('active');
+    if (i === step - 2) el.classList.add('active');
+  });
+}
+
+// ============================================================
+// Login
+// ============================================================
+function doLogin() {
+  const udise = document.getElementById('udiseInput').value.trim();
+  const alertEl = document.getElementById('loginAlert');
+  alertEl.classList.remove('show');
+
+  if (!udise || udise.length < 9) {
+    showAlert('loginAlert', 'Kripya valid UDISE Code daalen (9-11 digits).');
+    return;
+  }
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Searching...';
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      btn.disabled = false;
+      btn.innerHTML = 'Login &rarr;';
+      if (result.success) {
+        schoolData = result.data;
+        fillSchoolInfo(result.data);
+        goStep(2);
+      } else {
+        showAlert('loginAlert', result.message);
+      }
+    })
+    .withFailureHandler(function(err) {
+      btn.disabled = false;
+      btn.innerHTML = 'Login &rarr;';
+      showAlert('loginAlert', 'Error: ' + err.message);
+    })
+    .getSchoolData(udise);
+}
+
+function fillSchoolInfo(d) {
+  document.getElementById('si_udise').textContent = d.udise;
+  document.getElementById('si_district').textContent = d.district;
+  document.getElementById('si_school').textContent = d.schoolName;
+  document.getElementById('si_principal').textContent = d.principalName;
+  document.getElementById('si_mobile').textContent = d.mobile;
+}
+
+// Enter key on UDISE field
+document.getElementById('udiseInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ============================================================
+// Photo Handling
+// ============================================================
+function handlePhotos(actNum, input) {
+  const files = Array.from(input.files);
+  // Merge with existing (avoid duplicates by name)
+  const existing = photoFiles[actNum];
+  files.forEach(f => {
+    if (!existing.find(e => e.name === f.name && e.size === f.size)) {
+      existing.push(f);
+    }
+  });
+  renderPreviews(actNum);
+  input.value = ''; // reset so same file can be added again if needed
+}
+
+function removePhoto(actNum, idx) {
+  photoFiles[actNum].splice(idx, 1);
+  renderPreviews(actNum);
+}
+
+function renderPreviews(actNum) {
+  const grid = document.getElementById('a' + actNum + '_preview');
+  const countEl = document.getElementById('a' + actNum + '_count');
+  const files = photoFiles[actNum];
+
+  grid.innerHTML = '';
+  files.forEach((file, i) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const item = document.createElement('div');
+      item.className = 'preview-item';
+      item.innerHTML = '<img src="' + e.target.result + '" alt="photo">' +
+        '<button class="remove-btn" onclick="removePhoto(' + actNum + ',' + i + ')">&#x2715;</button>';
+      grid.appendChild(item);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  const n = files.length;
+  if (n === 0) {
+    countEl.textContent = '';
+    countEl.className = 'photo-count';
+  } else if (n < 3) {
+    countEl.textContent = n + ' photo(s) selected — Kam se kam 3 photos zaroori hain.';
+    countEl.className = 'photo-count warn';
+  } else {
+    countEl.textContent = n + ' photos selected ✓';
+    countEl.className = 'photo-count ok';
+  }
+}
+
+// ============================================================
+// Validation
+// ============================================================
+function validateActivity(n) {
+  const name = document.getElementById('a' + n + '_name').value.trim();
+  const date = document.getElementById('a' + n + '_date').value;
+  const boys = document.getElementById('a' + n + '_boys').value;
+  const girls = document.getElementById('a' + n + '_girls').value;
+  const teachers = document.getElementById('a' + n + '_teachers').value;
+  const photos = photoFiles[n];
+  const alertId = 'act' + n + 'Alert';
+
+  if (!name) { showAlert(alertId, 'Activity Name khali nahi chhod sakte.'); return false; }
+  if (!date) { showAlert(alertId, 'Activity Date select karein.'); return false; }
+  if (boys === '' && girls === '') { showAlert(alertId, 'Students ki sankhya darj karein.'); return false; }
+  if (teachers === '') { showAlert(alertId, 'Teachers ki sankhya darj karein.'); return false; }
+  if (photos.length < 3) { showAlert(alertId, 'Minimum 3 photos upload karni hain. Abhi ' + photos.length + ' selected hain.'); return false; }
+
+  document.getElementById(alertId).classList.remove('show');
+  return true;
+}
+
+function nextActivity(current) {
+  if (!validateActivity(current)) return;
+  goStep(current + 2); // step2=act1, step3=act2, step4=act3
+}
+
+// ============================================================
+// Submit & Upload
+// ============================================================
+async function submitForm() {
+  if (!validateActivity(3)) return;
+  goStep(5); // uploading screen
+
+  const allPhotos = [];
+  for (let act = 1; act <= 3; act++) {
+    const actName = document.getElementById('a' + act + '_name').value.trim();
+    for (let i = 0; i < photoFiles[act].length; i++) {
+      allPhotos.push({ act, actName, file: photoFiles[act][i], idx: i });
+    }
+  }
+
+  const total = allPhotos.length;
+  let done = 0;
+  const photoUrls = { 1: [], 2: [], 3: [] };
+
+  for (const item of allPhotos) {
+    document.getElementById('uploadStatus').textContent =
+      'Activity ' + item.act + ' - Photo ' + (item.idx + 1) + ' upload ho rahi hai...';
+    document.getElementById('uploadDetail').textContent =
+      done + ' / ' + total + ' photos complete';
+    document.getElementById('uploadBar').style.width = Math.round((done / total) * 85) + '%';
+
+    try {
+      const { base64, mimeType } = await compressAndEncode(item.file);
+      const url = await uploadPhotoToServer(
+        base64, mimeType,
+        'act' + item.act + '_' + item.idx + '_' + Date.now() + '.jpg',
+        schoolData.district, schoolData.udise, schoolData.schoolName, item.actName
+      );
+      if (url) photoUrls[item.act].push(url);
+    } catch (e) {
+      console.error('Photo upload failed:', e);
+    }
+    done++;
+  }
+
+  document.getElementById('uploadStatus').textContent = 'Data save ho raha hai...';
+  document.getElementById('uploadBar').style.width = '95%';
+
+  // Save form data
+  const formData = {
+    udise: schoolData.udise,
+    district: schoolData.district,
+    schoolName: schoolData.schoolName,
+    principalName: schoolData.principalName,
+    mobile: schoolData.mobile,
+    activity1: {
+      name: document.getElementById('a1_name').value.trim(),
+      date: document.getElementById('a1_date').value,
+      boys: document.getElementById('a1_boys').value,
+      girls: document.getElementById('a1_girls').value,
+      teachers: document.getElementById('a1_teachers').value,
+      photoUrls: photoUrls[1]
+    },
+    activity2: {
+      name: document.getElementById('a2_name').value.trim(),
+      date: document.getElementById('a2_date').value,
+      boys: document.getElementById('a2_boys').value,
+      girls: document.getElementById('a2_girls').value,
+      teachers: document.getElementById('a2_teachers').value,
+      photoUrls: photoUrls[2]
+    },
+    activity3: {
+      name: document.getElementById('a3_name').value.trim(),
+      date: document.getElementById('a3_date').value,
+      boys: document.getElementById('a3_boys').value,
+      girls: document.getElementById('a3_girls').value,
+      teachers: document.getElementById('a3_teachers').value,
+      photoUrls: photoUrls[3]
+    }
+  };
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      document.getElementById('uploadBar').style.width = '100%';
+      if (result.success) {
+        document.getElementById('successRef').innerHTML =
+          '<strong>School:</strong> ' + schoolData.schoolName + '<br>' +
+          '<strong>UDISE:</strong> ' + schoolData.udise + '<br>' +
+          '<strong>Photos Uploaded:</strong> ' + done;
+        goStep(6);
+      } else {
+        alert('Save karne mein error: ' + result.message);
+        goStep(4);
+      }
+    })
+    .withFailureHandler(function(err) {
+      alert('Error: ' + err.message);
+      goStep(4);
+    })
+    .saveFormData(formData);
+}
+
+// ============================================================
+// Compress image and convert to base64
+// ============================================================
+function compressAndEncode(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const MAX_W = 1280, MAX_H = 960;
+        let w = img.width, h = img.height;
+        if (w > MAX_W) { h = h * MAX_W / w; w = MAX_W; }
+        if (h > MAX_H) { w = w * MAX_H / h; h = MAX_H; }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+        const base64 = dataUrl.split(',')[1];
+        resolve({ base64, mimeType: 'image/jpeg' });
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ============================================================
+// Upload single photo via Apps Script
+// ============================================================
+function uploadPhotoToServer(base64, mimeType, fileName, district, udise, schoolName, activityName) {
+  return new Promise((resolve, reject) => {
+    google.script.run
+      .withSuccessHandler(function(result) {
+        if (result.success) resolve(result.url);
+        else resolve(null);
+      })
+      .withFailureHandler(function(err) {
+        resolve(null); // don't block entire submission on single photo failure
+      })
+      .uploadPhoto(base64, mimeType, fileName, district, udise, schoolName, activityName);
+  });
+}
+
+// ============================================================
+// Helpers
+// ============================================================
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.add('show');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetForm() {
+  photoFiles = { 1: [], 2: [], 3: [] };
+  schoolData = {};
+  ['a1_name','a1_date','a1_boys','a1_girls','a1_teachers',
+   'a2_name','a2_date','a2_boys','a2_girls','a2_teachers',
+   'a3_name','a3_date','a3_boys','a3_girls','a3_teachers'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  ['a1_preview','a2_preview','a3_preview'].forEach(id => {
+    document.getElementById(id).innerHTML = '';
+  });
+  ['a1_count','a2_count','a3_count'].forEach(id => {
+    document.getElementById(id).textContent = '';
+  });
+  document.getElementById('udiseInput').value = '';
+  goStep(1);
+}
+</script>
+</body>
+</html>
