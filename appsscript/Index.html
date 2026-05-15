@@ -25,11 +25,22 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color:
 .tricolor { height: 5px; background: linear-gradient(90deg, #FF9933 33.33%, #fff 33.33% 66.66%, #138808 66.66%); }
 .header {
   background: linear-gradient(135deg, var(--dark) 0%, var(--blue) 100%);
-  color: white; padding: 10px 20px; text-align: center;
+  color: white; padding: 8px 20px;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
-.header h1 { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.2px; }
-.header p  { font-size: 0.7rem; opacity: 0.78; margin-top: 2px; }
+.header-logo {
+  height: 40px; width: auto;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+  flex-shrink: 0;
+}
+.header-divider {
+  width: 1px; height: 32px;
+  background: rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+.header-text h1 { font-size: 0.88rem; font-weight: 800; letter-spacing: 0.2px; }
+.header-text p  { font-size: 0.65rem; opacity: 0.75; margin-top: 2px; }
 
 /* ---- LOGIN PAGE ---- */
 .login-bg {
@@ -240,8 +251,14 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 
 <div class="tricolor"></div>
 <div class="header">
-  <h1>PM SHRI School Activity Monitoring Dashboard</h1>
-  <p>Samagra Shiksha &nbsp;|&nbsp; Secondary Education Department, Govt. of Uttar Pradesh</p>
+  <img class="header-logo"
+       src="https://pmshri.education.gov.in/static/media/pm-shri.ec4909ab870a611f73d7.png"
+       alt="PM SHRI">
+  <div class="header-divider"></div>
+  <div class="header-text">
+    <h1>PM SHRI School Activity Monitoring Dashboard</h1>
+    <p>Samagra Shiksha &nbsp;|&nbsp; Secondary Education Department, Govt. of Uttar Pradesh</p>
+  </div>
 </div>
 
 <!-- ========== LOGIN ========== -->
@@ -249,7 +266,8 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
   <div class="login-card">
     <div class="login-top">
       <div class="gov-tag">&#127787; Samagra Shiksha &nbsp;|&nbsp; Secondary Education Dept., UP</div>
-      <h2>PM SHRI</h2>
+      <img src="https://pmshri.education.gov.in/static/media/pm-shri.ec4909ab870a611f73d7.png"
+           alt="PM SHRI" style="height:54px;width:auto;margin-bottom:10px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
       <div class="sub">School Activity Monitoring Dashboard<br>
         <span style="font-size:0.7rem;opacity:0.7;">Pradhan Mantri Schools for Rising India</span>
       </div>

@@ -47,15 +47,27 @@
     font-size: 1.2rem;
     flex-shrink: 0;
   }
+  .brand-logo {
+    height: 44px;
+    width: auto;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
+    flex-shrink: 0;
+  }
+  .brand-divider {
+    width: 1px; height: 36px;
+    background: rgba(255,255,255,0.25);
+    flex-shrink: 0;
+  }
   .brand-text h1 {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 800;
     color: #fff;
-    line-height: 1.2;
+    line-height: 1.25;
   }
   .brand-text p {
-    font-size: 0.65rem;
+    font-size: 0.63rem;
     color: rgba(255,255,255,0.65);
+    margin-top: 1px;
   }
 
   .header-right {
@@ -119,7 +131,11 @@
 
 <header>
   <div class="brand">
-    <div class="brand-icon">&#127979;</div>
+    <img class="brand-logo"
+         src="https://pmshri.education.gov.in/static/media/pm-shri.ec4909ab870a611f73d7.png"
+         alt="PM SHRI Logo"
+         onerror="this.src='assets/pmshri-logo.png'">
+    <div class="brand-divider"></div>
     <div class="brand-text">
       <h1>PM SHRI School Activity Monitoring Dashboard</h1>
       <p>Samagra Shiksha &nbsp;|&nbsp; Secondary Education Department, Govt. of Uttar Pradesh</p>
