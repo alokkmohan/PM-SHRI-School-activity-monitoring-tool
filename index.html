@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,579 +7,141 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --blue-dark: #0d2657;
-    --blue:      #1a47a8;
-    --blue-mid:  #1565c0;
-    --blue-light:#e8f0fe;
-    --saffron:   #FF9933;
-    --green:     #138808;
-    --white:     #ffffff;
-    --text:      #1e293b;
-    --muted:     #64748b;
-    --card-bg:   #ffffff;
-    --bg:        #f1f5fb;
-  }
-
-  html { scroll-behavior: smooth; }
-
   body {
-    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #f1f5fb;
   }
 
-  /* ======== TRICOLOR BAR ======== */
-  .tricolor-bar {
-    height: 6px;
-    background: linear-gradient(90deg,
-      var(--saffron) 33.33%,
-      var(--white)   33.33%,
-      var(--white)   66.66%,
-      var(--green)   66.66%
-    );
+  .tricolor {
+    height: 5px;
+    flex-shrink: 0;
+    background: linear-gradient(90deg, #FF9933 33.33%, #ffffff 33.33% 66.66%, #138808 66.66%);
   }
 
-  /* ======== NAVBAR ======== */
-  nav {
-    background: var(--blue-dark);
-    padding: 12px 24px;
+  header {
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #0d2657 0%, #1565c0 100%);
+    color: white;
+    padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   }
-  .nav-brand {
+
+  .brand {
     display: flex;
     align-items: center;
-    gap: 12px;
-    color: white;
-    text-decoration: none;
+    gap: 10px;
   }
-  .nav-brand .logo-circle {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--saffron), #fff 50%, var(--green));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem;
-    flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  }
-  .nav-brand .brand-text strong {
-    display: block;
-    font-size: 0.95rem;
-    font-weight: 800;
-    letter-spacing: 0.3px;
-    color: #fff;
-  }
-  .nav-brand .brand-text span {
-    font-size: 0.68rem;
-    color: rgba(255,255,255,0.65);
-    letter-spacing: 0.2px;
-  }
-  .nav-cta {
-    background: var(--saffron);
-    color: var(--blue-dark);
-    border: none;
+  .brand-icon {
+    width: 36px; height: 36px;
     border-radius: 8px;
-    padding: 9px 20px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background 0.2s, transform 0.1s;
-    letter-spacing: 0.2px;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
   }
-  .nav-cta:hover { background: #e88c24; transform: translateY(-1px); }
+  .brand-text h1 {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .brand-text p {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.65);
+  }
 
-  /* ======== HERO ======== */
-  .hero {
-    background: linear-gradient(150deg, var(--blue-dark) 0%, var(--blue) 55%, #1e6ec8 100%);
-    color: white;
-    padding: 72px 24px 80px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
   }
-  .hero::before {
-    content: '';
+  .badge-gov {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.67rem;
+    color: rgba(255,255,255,0.8);
+    white-space: nowrap;
+  }
+  @media (max-width: 500px) { .badge-gov { display: none; } }
+
+  .frame-wrap {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* Loading indicator while iframe loads */
+  .frame-loader {
     position: absolute;
     inset: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  }
-  .hero-content { position: relative; max-width: 720px; margin: 0 auto; }
-  .hero-badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 24px;
-    padding: 5px 18px;
-    font-size: 0.72rem;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    color: rgba(255,255,255,0.9);
-  }
-  .hero h1 {
-    font-size: clamp(1.8rem, 5vw, 2.8rem);
-    font-weight: 900;
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-    margin-bottom: 8px;
-  }
-  .hero h1 span { color: var(--saffron); }
-  .hero .hero-sub {
-    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
-    color: rgba(255,255,255,0.78);
-    margin-bottom: 36px;
-    max-width: 540px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-  .btn-hero-primary {
-    background: var(--saffron);
-    color: var(--blue-dark);
-    border: none;
-    border-radius: 10px;
-    padding: 14px 32px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-    box-shadow: 0 4px 14px rgba(255,153,51,0.4);
-  }
-  .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(255,153,51,0.5); }
-  .btn-hero-secondary {
-    background: rgba(255,255,255,0.1);
-    color: white;
-    border: 1.5px solid rgba(255,255,255,0.35);
-    border-radius: 10px;
-    padding: 13px 28px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-  .btn-hero-secondary:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
-
-  .hero-wave {
-    position: absolute;
-    bottom: -2px; left: 0; right: 0;
-    height: 60px;
-    background: var(--bg);
-    clip-path: ellipse(60% 100% at 50% 100%);
-  }
-
-  /* ======== STATS BAND ======== */
-  .stats-band {
-    background: white;
-    padding: 28px 24px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-  .stats-grid {
-    max-width: 900px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 0;
-    text-align: center;
-  }
-  .stat-item {
-    padding: 8px 16px;
-    border-right: 1px solid #e2e8f0;
-  }
-  .stat-item:last-child { border-right: none; }
-  .stat-num {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--blue);
-    line-height: 1.1;
-  }
-  .stat-num span { font-size: 1.2rem; }
-  .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 3px; letter-spacing: 0.2px; }
-
-  /* ======== SECTION ======== */
-  .section { padding: 60px 24px; }
-  .section-inner { max-width: 960px; margin: 0 auto; }
-  .section-title {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  .section-title .tag {
-    display: inline-block;
-    background: var(--blue-light);
-    color: var(--blue);
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .section-title h2 {
-    font-size: clamp(1.3rem, 3vw, 1.8rem);
-    font-weight: 800;
-    color: var(--blue-dark);
-    margin-bottom: 8px;
-  }
-  .section-title p { color: var(--muted); font-size: 0.9rem; max-width: 480px; margin: 0 auto; }
-
-  /* ======== HOW IT WORKS ======== */
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-  }
-  .step-card {
-    background: white;
-    border-radius: 14px;
-    padding: 24px 20px;
-    text-align: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    border-top: 4px solid var(--blue-mid);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .step-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-  .step-card .step-num {
-    width: 44px; height: 44px;
-    background: linear-gradient(135deg, var(--blue), var(--blue-mid));
-    border-radius: 50%;
-    color: white;
-    font-weight: 800;
-    font-size: 1.1rem;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 14px;
-    box-shadow: 0 3px 8px rgba(21,101,192,0.35);
-  }
-  .step-card h3 { font-size: 0.9rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; }
-  .step-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
-
-  /* ======== FEATURES ======== */
-  .features-bg { background: var(--blue-dark); }
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-  }
-  .feature-card {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 14px;
-    padding: 24px;
-    color: white;
-    transition: background 0.2s;
-  }
-  .feature-card:hover { background: rgba(255,255,255,0.12); }
-  .feature-icon { font-size: 2rem; margin-bottom: 12px; }
-  .feature-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
-  .feature-card p { font-size: 0.8rem; color: rgba(255,255,255,0.68); line-height: 1.6; }
-
-  /* ======== ACTIVITIES SECTION ======== */
-  .activities-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-  }
-  .activity-card {
-    background: white;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .activity-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-  .activity-card-header {
-    height: 8px;
-  }
-  .activity-card-header.act1 { background: linear-gradient(90deg, var(--saffron), #ffca28); }
-  .activity-card-header.act2 { background: linear-gradient(90deg, var(--blue-mid), #42a5f5); }
-  .activity-card-header.act3 { background: linear-gradient(90deg, var(--green), #66bb6a); }
-  .activity-card-body { padding: 20px; }
-  .activity-card-body h3 { font-size: 0.95rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 8px; }
-  .activity-card-body p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
-  .activity-fields {
-    margin-top: 12px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5fb;
+    gap: 14px;
+    pointer-events: none;
+    transition: opacity 0.3s;
   }
-  .field-tag {
-    background: var(--blue-light);
-    color: var(--blue);
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 0.7rem;
-    font-weight: 600;
+  .frame-loader.hidden { opacity: 0; }
+  .loader-spinner {
+    width: 40px; height: 40px;
+    border: 4px solid #c5cae9;
+    border-top-color: #1565c0;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
   }
-
-  /* ======== CTA SECTION ======== */
-  .cta-section {
-    background: linear-gradient(135deg, var(--saffron) 0%, #ff8c00 100%);
-    padding: 56px 24px;
-    text-align: center;
-  }
-  .cta-section h2 { font-size: clamp(1.3rem, 3vw, 1.8rem); font-weight: 800; color: var(--blue-dark); margin-bottom: 10px; }
-  .cta-section p { color: rgba(13,38,87,0.75); font-size: 0.9rem; margin-bottom: 28px; max-width: 460px; margin-left: auto; margin-right: auto; }
-  .btn-cta {
-    background: var(--blue-dark);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 15px 36px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: all 0.2s;
-    box-shadow: 0 4px 14px rgba(13,38,87,0.35);
-  }
-  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(13,38,87,0.4); }
-
-  /* ======== FOOTER ======== */
-  footer {
-    background: var(--blue-dark);
-    color: rgba(255,255,255,0.65);
-    text-align: center;
-    padding: 24px;
-    font-size: 0.78rem;
-    line-height: 1.8;
-  }
-  footer a { color: rgba(255,255,255,0.8); text-decoration: none; }
-  footer strong { color: white; }
-
-  @media (max-width: 600px) {
-    .stat-item { border-right: none; border-bottom: 1px solid #e2e8f0; }
-    .stat-item:last-child { border-bottom: none; }
-    nav { padding: 10px 16px; }
-  }
+  .frame-loader p { font-size: 0.85rem; color: #64748b; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<div class="tricolor-bar"></div>
+<div class="tricolor"></div>
 
-<!-- NAVBAR -->
-<nav>
-  <a class="nav-brand" href="#">
-    <div class="logo-circle">&#127979;</div>
+<header>
+  <div class="brand">
+    <div class="brand-icon">&#127979;</div>
     <div class="brand-text">
-      <strong>PM SHRI Dashboard</strong>
-      <span>School Activity Monitoring</span>
-    </div>
-  </a>
-  <a class="nav-cta" href="https://script.google.com/macros/s/AKfycbxOWW-Br1Yeb_NUgWJKvo3EgWwE-CI5tWOM0K1CxKUXXL7uzkGRYQfB9ps3TaAehkA/exec" target="_blank">
-    Submit Activity &rarr;
-  </a>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">&#127787; Ministry of Education &nbsp;|&nbsp; Govt. of India</div>
-    <h1>PM <span>SHRI</span> School<br>Activity Monitoring</h1>
-    <p class="hero-sub">
-      Digital platform for 160 PM SHRI schools to report activities,
-      track student participation, and upload photographic evidence — all in one place.
-    </p>
-    <div class="hero-btns">
-      <a class="btn-hero-primary"
-         href="https://script.google.com/macros/s/AKfycbxOWW-Br1Yeb_NUgWJKvo3EgWwE-CI5tWOM0K1CxKUXXL7uzkGRYQfB9ps3TaAehkA/exec"
-         target="_blank">
-        Submit Your Activity &rarr;
-      </a>
-      <a class="btn-hero-secondary" href="#how-it-works">How It Works</a>
+      <h1>PM SHRI School Activity Monitoring Dashboard</h1>
+      <p>Pradhan Mantri Schools for Rising India &mdash; Ministry of Education, Govt. of India</p>
     </div>
   </div>
-  <div class="hero-wave"></div>
-</section>
-
-<!-- STATS BAND -->
-<div class="stats-band">
-  <div class="stats-grid">
-    <div class="stat-item">
-      <div class="stat-num">160</div>
-      <div class="stat-label">PM SHRI Schools</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">3</div>
-      <div class="stat-label">Activities per School</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">9<span>+</span></div>
-      <div class="stat-label">Photos Minimum</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">100<span>%</span></div>
-      <div class="stat-label">Digital Reporting</div>
-    </div>
+  <div class="header-right">
+    <span class="badge-gov">&#127787; 160 PM SHRI Schools &bull; Uttar Pradesh</span>
   </div>
+</header>
+
+<div class="frame-wrap">
+  <div class="frame-loader" id="loader">
+    <div class="loader-spinner"></div>
+    <p>Loading form...</p>
+  </div>
+  <iframe
+    src="https://script.google.com/macros/s/AKfycbzes22G8RYn5vbvnWCGNGFuFcoorEQ0w2_PekQ0IrP-1dCvaaxe9EFJgwNCLdKyfd0/exec"
+    title="PM SHRI Activity Monitoring Form"
+    onload="document.getElementById('loader').classList.add('hidden')"
+    allow="camera; microphone">
+  </iframe>
 </div>
-
-<!-- HOW IT WORKS -->
-<section class="section" id="how-it-works">
-  <div class="section-inner">
-    <div class="section-title">
-      <div class="tag">Process</div>
-      <h2>How It Works</h2>
-      <p>Simple 4-step process for school principals to submit activity reports</p>
-    </div>
-    <div class="steps-grid">
-      <div class="step-card">
-        <div class="step-num">1</div>
-        <h3>Login with UDISE</h3>
-        <p>Enter your 11-digit UDISE code. School details auto-fill from the master database.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">2</div>
-        <h3>Fill Activity Details</h3>
-        <p>Enter activity name, date, and count of boys, girls, and teachers who participated.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">3</div>
-        <h3>Upload Photographs</h3>
-        <p>Upload minimum 3 photos per activity directly from your phone or computer.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">4</div>
-        <h3>Submit &amp; Done</h3>
-        <p>Data saves to Google Sheets, photos organize to Drive. Instant confirmation.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ACTIVITIES SECTION -->
-<section class="section" style="background: white; padding-top: 40px; padding-bottom: 60px;">
-  <div class="section-inner">
-    <div class="section-title">
-      <div class="tag">Activities</div>
-      <h2>Three Activity Reports per School</h2>
-      <p>Each school submits detailed information for 3 activities conducted</p>
-    </div>
-    <div class="activities-grid">
-      <div class="activity-card">
-        <div class="activity-card-header act1"></div>
-        <div class="activity-card-body">
-          <h3>Activity 1</h3>
-          <p>First school activity — cultural, academic, sports, or community program conducted by the school.</p>
-          <div class="activity-fields">
-            <span class="field-tag">Activity Name</span>
-            <span class="field-tag">Date</span>
-            <span class="field-tag">Boys Count</span>
-            <span class="field-tag">Girls Count</span>
-            <span class="field-tag">Teachers</span>
-            <span class="field-tag">3+ Photos</span>
-          </div>
-        </div>
-      </div>
-      <div class="activity-card">
-        <div class="activity-card-header act2"></div>
-        <div class="activity-card-body">
-          <h3>Activity 2</h3>
-          <p>Second school activity — could be a science fair, plantation drive, health camp, or any initiative.</p>
-          <div class="activity-fields">
-            <span class="field-tag">Activity Name</span>
-            <span class="field-tag">Date</span>
-            <span class="field-tag">Boys Count</span>
-            <span class="field-tag">Girls Count</span>
-            <span class="field-tag">Teachers</span>
-            <span class="field-tag">3+ Photos</span>
-          </div>
-        </div>
-      </div>
-      <div class="activity-card">
-        <div class="activity-card-header act3"></div>
-        <div class="activity-card-body">
-          <h3>Activity 3</h3>
-          <p>Third school activity — environment day, skill development, digital literacy, or any PM SHRI aligned program.</p>
-          <div class="activity-fields">
-            <span class="field-tag">Activity Name</span>
-            <span class="field-tag">Date</span>
-            <span class="field-tag">Boys Count</span>
-            <span class="field-tag">Girls Count</span>
-            <span class="field-tag">Teachers</span>
-            <span class="field-tag">3+ Photos</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section class="section features-bg">
-  <div class="section-inner">
-    <div class="section-title">
-      <div class="tag" style="background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.85);">Features</div>
-      <h2 style="color:white;">Built for Schools,<br>Designed for Simplicity</h2>
-      <p style="color:rgba(255,255,255,0.6);">No complex software. Works on any device with internet access.</p>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">&#128275;</div>
-        <h3>UDISE Login</h3>
-        <p>Secure login using your school's official UDISE code. No passwords to remember.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#9889;</div>
-        <h3>Auto-Fill Details</h3>
-        <p>District, school name, and principal info auto-populate from the master database.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#128247;</div>
-        <h3>Photo Upload</h3>
-        <p>Upload activity photos from phone or computer. Images auto-organize by district and school.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#128202;</div>
-        <h3>Google Sheets Data</h3>
-        <p>All submissions instantly saved to Google Sheets for easy monitoring and reporting.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#128241;</div>
-        <h3>Mobile Friendly</h3>
-        <p>Fully responsive design. Principals can submit from their smartphones directly.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#128193;</div>
-        <h3>Organized Drive</h3>
-        <p>Photos stored in Drive: District &rarr; School &rarr; Activity — easy to find anytime.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section">
-  <h2>Ready to Submit Your School's Activities?</h2>
-  <p>Click below and use your UDISE code to login. Takes less than 5 minutes to submit all 3 activities.</p>
-  <a class="btn-cta"
-     href="https://script.google.com/macros/s/AKfycbxOWW-Br1Yeb_NUgWJKvo3EgWwE-CI5tWOM0K1CxKUXXL7uzkGRYQfB9ps3TaAehkA/exec"
-     target="_blank">
-    Open Activity Form &rarr;
-  </a>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <strong>PM SHRI School Activity Monitoring Dashboard</strong><br>
-  Pradhan Mantri Schools for Rising India &nbsp;&bull;&nbsp; Ministry of Education, Government of India<br>
-  <span style="margin-top:6px; display:block;">
-    Built with Google Apps Script &nbsp;&bull;&nbsp;
-    <a href="https://github.com/alokkmohan/PM-SHRI-School-activity-monitoring-tool" target="_blank">GitHub</a>
-  </span>
-</footer>
 
 </body>
 </html>
