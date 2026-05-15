@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,96 +33,61 @@
     gap: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .brand-icon {
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.15);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-  }
-  .brand-logo {
-    height: 44px;
-    width: auto;
-    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
-    flex-shrink: 0;
-  }
-  .brand-divider {
-    width: 1px; height: 36px;
-    background: rgba(255,255,255,0.25);
-    flex-shrink: 0;
-  }
-  .brand-text h1 {
-    font-size: 0.88rem;
-    font-weight: 800;
-    color: #fff;
-    line-height: 1.25;
-  }
-  .brand-text p {
-    font-size: 0.63rem;
-    color: rgba(255,255,255,0.65);
-    margin-top: 1px;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { height: 44px; width: auto; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25)); flex-shrink: 0; }
+  .brand-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.25); flex-shrink: 0; }
+  .brand-text h1 { font-size: 0.88rem; font-weight: 800; color: #fff; line-height: 1.25; }
+  .brand-text p  { font-size: 0.63rem; color: rgba(255,255,255,0.65); margin-top: 1px; }
   .badge-gov {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 0.67rem;
-    color: rgba(255,255,255,0.8);
-    white-space: nowrap;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px; padding: 4px 12px; font-size: 0.67rem;
+    color: rgba(255,255,255,0.8); white-space: nowrap;
   }
   @media (max-width: 500px) { .badge-gov { display: none; } }
 
-  .frame-wrap {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-  }
-
-  iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
-  }
-
-  /* Loading indicator while iframe loads */
+  /* ---- Desktop: iframe ---- */
+  .frame-wrap { flex: 1; overflow: hidden; position: relative; }
+  iframe { width: 100%; height: 100%; border: none; display: block; }
   .frame-loader {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #f1f5fb;
-    gap: 14px;
-    pointer-events: none;
-    transition: opacity 0.3s;
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: #f1f5fb; gap: 14px; pointer-events: none; transition: opacity 0.3s;
   }
-  .frame-loader.hidden { opacity: 0; }
+  .frame-loader.hidden { opacity: 0; pointer-events: none; }
   .loader-spinner {
     width: 40px; height: 40px;
-    border: 4px solid #c5cae9;
-    border-top-color: #1565c0;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    border: 4px solid #c5cae9; border-top-color: #1565c0;
+    border-radius: 50%; animation: spin 0.8s linear infinite;
   }
   .frame-loader p { font-size: 0.85rem; color: #64748b; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- Mobile: direct link screen ---- */
+  .mobile-screen {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    background: linear-gradient(160deg, #e8eaf6 0%, #e3f2fd 100%);
+    text-align: center;
+    gap: 20px;
+  }
+  .mobile-screen img { height: 70px; width: auto; }
+  .mobile-screen h2 { font-size: 1.1rem; font-weight: 800; color: #0d2657; line-height: 1.3; }
+  .mobile-screen p  { font-size: 0.85rem; color: #64748b; line-height: 1.6; max-width: 320px; }
+  .btn-open {
+    display: inline-block;
+    background: linear-gradient(135deg, #0d2657, #1565c0);
+    color: white; text-decoration: none;
+    padding: 15px 36px; border-radius: 12px;
+    font-size: 1rem; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(13,38,87,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-open:active { transform: scale(0.97); }
+  .mobile-note { font-size: 0.72rem; color: #94a3b8; }
 </style>
 </head>
 <body>
@@ -146,18 +111,44 @@
   </div>
 </header>
 
-<div class="frame-wrap">
+<!-- Desktop: iframe -->
+<div class="frame-wrap" id="desktopFrame">
   <div class="frame-loader" id="loader">
     <div class="loader-spinner"></div>
     <p>Loading form...</p>
   </div>
   <iframe
+    id="gasFrame"
     src="https://script.google.com/macros/s/AKfycbwxr5ZkOYf8ARU0-NPgB46vkSmZBbWqkPBSy0bPUoHUfR2nVi8zMn5gv04W_RSjLMSy/exec"
     title="PM SHRI Activity Monitoring Form"
     onload="document.getElementById('loader').classList.add('hidden')"
     allow="camera; microphone">
   </iframe>
 </div>
+
+<!-- Mobile: direct open button -->
+<div class="mobile-screen" id="mobileScreen">
+  <img src="https://pmshri.education.gov.in/static/media/pm-shri.ec4909ab870a611f73d7.png"
+       alt="PM SHRI" onerror="this.src='assets/pmshri-logo.png'">
+  <h2>PM SHRI School Activity<br>Monitoring Dashboard</h2>
+  <p>Tap the button below to open the Activity Submission Form.</p>
+  <a class="btn-open"
+     href="https://script.google.com/macros/s/AKfycbwxr5ZkOYf8ARU0-NPgB46vkSmZBbWqkPBSy0bPUoHUfR2nVi8zMn5gv04W_RSjLMSy/exec"
+     target="_blank">
+    Open Activity Form &rarr;
+  </a>
+  <div class="mobile-note">Opens in your browser &bull; Login with your UDISE Code</div>
+</div>
+
+<script>
+  // Google Apps Script iframes are blocked on mobile when signed into Google.
+  // On mobile: show a direct link button instead.
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  if (isMobile) {
+    document.getElementById('desktopFrame').style.display = 'none';
+    document.getElementById('mobileScreen').style.display = 'flex';
+  }
+</script>
 
 </body>
 </html>
