@@ -119,7 +119,7 @@
   </div>
   <iframe
     id="gasFrame"
-    src="https://script.google.com/macros/s/AKfycbwiO37vUJYy3MKbgiQilVf_oCnBR1Winm17ITyMSpwh4lTCvSGw5r97cSG1DDi8OIIA/exec"
+    src="https://script.google.com/macros/s/AKfycbytpij1QZ6ZzLpyUZYevmz6j9aBw87OKHeVh088kvxJllKgLXyuS6Apn9XEsxxnKuY/exec"
     title="PM SHRI Activity Monitoring Form"
     onload="document.getElementById('loader').classList.add('hidden')"
     allow="camera; microphone">
@@ -133,7 +133,7 @@
   <h2>PM SHRI School Activity<br>Monitoring Tool</h2>
   <p>Tap the button below to open the Activity Submission Form.</p>
   <a class="btn-open"
-     href="https://script.google.com/macros/s/AKfycbwiO37vUJYy3MKbgiQilVf_oCnBR1Winm17ITyMSpwh4lTCvSGw5r97cSG1DDi8OIIA/exec"
+     href="https://script.google.com/macros/s/AKfycbytpij1QZ6ZzLpyUZYevmz6j9aBw87OKHeVh088kvxJllKgLXyuS6Apn9XEsxxnKuY/exec"
      target="_blank">
     Open Activity Form &rarr;
   </a>
@@ -141,12 +141,10 @@
 </div>
 
 <script>
-  // Google Apps Script iframes are blocked on mobile when signed into Google.
-  // On mobile: show a direct link button instead.
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbytpij1QZ6ZzLpyUZYevmz6j9aBw87OKHeVh088kvxJllKgLXyuS6Apn9XEsxxnKuY/exec";
   const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
   if (isMobile) {
-    document.getElementById('desktopFrame').style.display = 'none';
-    document.getElementById('mobileScreen').style.display = 'flex';
+    window.location.replace(GAS_URL);
   }
 </script>
 
