@@ -1,0 +1,4 @@
+name = "pm-shri-api"
+main = "worker.js"
+compatibility_date = "2026-05-16"
+compatibility_flags = ["nodejs_compat"]
