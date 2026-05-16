@@ -9,13 +9,40 @@ const RESPONSES_SHEET = 'Responses';
 const DATA_START_ROW  = 4;
 const PHOTOS_FOLDER_ID = '1LJAqwfPqcCBO77GLFzL0SrZqhum5PptJ';
 
-// ---- Serve Web App ----
-function doGet() {
+// ---- Serve Web App / API ----
+function doGet(e) {
+  const action = e && e.parameter && e.parameter.action;
+  if (action === 'getSchool') {
+    return jsonResp(getSchoolData(e.parameter.udise || ''));
+  }
   return HtmlService.createTemplateFromFile('Index')
     .evaluate()
     .setTitle('PM SHRI School Activity Monitoring Tool')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+function doPost(e) {
+  try {
+    const payload = JSON.parse(e.postData.contents);
+    if (payload.action === 'uploadPhoto') {
+      return jsonResp(uploadPhoto(
+        payload.base64Data, payload.mimeType, payload.fileName,
+        payload.district, payload.udise, payload.schoolName, payload.activityName
+      ));
+    }
+    if (payload.action === 'saveActivity') {
+      return jsonResp(saveActivityData(payload));
+    }
+    return jsonResp({ success: false, message: 'Unknown action' });
+  } catch (err) {
+    return jsonResp({ success: false, message: err.message });
+  }
+}
+
+function jsonResp(data) {
+  return ContentService.createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 // ---- Normalize UDISE (strip leading zeros and .0) ----
