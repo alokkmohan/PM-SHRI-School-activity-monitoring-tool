@@ -42,13 +42,13 @@ Create an Apps Script project with these files:
 After deployment, the user form is:
 
 ```text
-https://script.google.com/macros/s/AKfycbxPo5wRnAy_ShXdIAXMeGVUsNjda9eUz-lXN05wxpg8wLy-CkT3PODrmju2zYV70GGV/exec
+https://script.google.com/macros/s/AKfycbwmpXujok-LbF7y4LyaJldBG23fJaJ8yrU_2u7Bax5lo23qhF92FVMvvuhipOFaeQE_/exec
 ```
 
 The admin panel is:
 
 ```text
-https://script.google.com/macros/s/AKfycbxPo5wRnAy_ShXdIAXMeGVUsNjda9eUz-lXN05wxpg8wLy-CkT3PODrmju2zYV70GGV/exec?page=admin
+https://script.google.com/macros/s/AKfycbwmpXujok-LbF7y4LyaJldBG23fJaJ8yrU_2u7Bax5lo23qhF92FVMvvuhipOFaeQE_/exec?page=admin
 ```
 
 ## Required Google access
@@ -81,4 +81,5 @@ When code changes:
 3. Edit the existing Web App deployment.
 4. Select **New version**.
 5. Click **Deploy**.
+
 
