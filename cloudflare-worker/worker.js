@@ -108,11 +108,8 @@ async function getAccessToken(env) {
 }
 
 async function makeJWT(header, payload, pemKey) {
-  const pem     = pemKey
-    .replace(/\\n/g, '\n')
-    .replace(/-----BEGIN PRIVATE KEY-----/g, '')
-    .replace(/-----END PRIVATE KEY-----/g, '')
-    .replace(/\s+/g, '');
+  // Strip everything except valid base64 chars — handles any newline/quote format
+  const pem     = pemKey.replace(/[^A-Za-z0-9+/=]/g, '');
   const keyData = Uint8Array.from(atob(pem), c => c.charCodeAt(0));
 
   const key = await crypto.subtle.importKey(
