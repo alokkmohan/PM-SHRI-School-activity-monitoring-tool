@@ -13,13 +13,25 @@ const ADMIN_PASSWORD  = 'pmshri@2026';
 // ---- Serve Web App / API ----
 function doGet(e) {
   const action = e && e.parameter && e.parameter.action;
+  const page = e && e.parameter && e.parameter.page;
+
   if (action === 'getSchool') {
     return jsonResp(getSchoolData(e.parameter.udise || ''));
   }
+
   if (action === 'getAdminData') {
     if (e.parameter.pwd !== ADMIN_PASSWORD) return jsonResp({ success: false, message: 'Unauthorized' });
     return jsonResp(getAdminData());
   }
+
+  if (page === 'admin') {
+    return HtmlService.createTemplateFromFile('Admin')
+      .evaluate()
+      .setTitle('PM SHRI Activity Monitoring - Admin Panel')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  }
+
   return HtmlService.createTemplateFromFile('Index')
     .evaluate()
     .setTitle('PM SHRI School Activity Monitoring Tool')
@@ -260,6 +272,13 @@ function getAdminData() {
   } catch (err) {
     return { success: false, message: err.message };
   }
+}
+
+function getAdminDataForPassword(pwd) {
+  if (pwd !== ADMIN_PASSWORD) {
+    return { success: false, message: 'Unauthorized' };
+  }
+  return getAdminData();
 }
 
 // ---- Helpers ----

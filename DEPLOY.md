@@ -1,26 +1,83 @@
 # Deployment Steps
 
-## Google Apps Script mein kya karna hai
+## Current setup
 
-1. GAS editor open karein: https://script.google.com/home
-2. **Index.html** file select karein
-3. Poora content delete karein
-4. Neeche diye raw GitHub link se copy karke paste karein:
-   https://raw.githubusercontent.com/alokkmohan/PM-SHRI-School-activity-monitoring-tool/master/appsscript/Index.html
-5. Save karein (Ctrl+S)
-6. **Deploy → Manage deployments → Edit (pencil) → New version → Deploy**
-7. Naya URL copy karein
+This project now uses Google Apps Script as the free backend and host for the live app.
 
-## index.html mein URL update karna (GitHub Pages)
+```text
+Browser -> Google Apps Script -> Google Sheets + Google Drive
+```
 
-`index.html` mein do jagah GAS URL update karna hoga:
+Cloudflare Worker is no longer required for the working app.
 
-- Line 122: `src="https://script.google.com/...` (iframe ke liye)
-- Line 136: `href="https://script.google.com/...` (mobile button ke liye)
+## Files to paste in Apps Script
 
-## Is baar ke changes (jo GAS mein dalne hain)
+Create an Apps Script project with these files:
 
-- PDF files upload ho sakti hain (image ke saath)
-- Activity tabs: pehle sirf Activity 1 dikhega
-- Activity 1 submit karne ke baad Activity 2 tab auto-open hoga
-- "+" button se aage ki activities add ho sakti hain
+| Apps Script file | Local source file |
+| --- | --- |
+| `Code.gs` | `appsscript/Code.gs` |
+| `Index.html` | `appsscript/Index.html` |
+| `Admin.html` | `appsscript/Admin.html` |
+
+## One-time Apps Script deploy
+
+1. Open https://script.google.com/home.
+2. Click **New project**.
+3. Rename the project to `PM SHRI Activity Monitoring`.
+4. Replace `Code.gs` with the content of `appsscript/Code.gs`.
+5. Add an HTML file named `Index` and paste `appsscript/Index.html`.
+6. Add an HTML file named `Admin` and paste `appsscript/Admin.html`.
+7. Click **Save**.
+8. Click **Deploy** -> **New deployment**.
+9. Select type: **Web app**.
+10. Set **Execute as** to **Me**.
+11. Set **Who has access** to **Anyone**.
+12. Click **Deploy**.
+13. Approve the Google permissions.
+14. Copy the Web App URL.
+
+## Live URLs
+
+After deployment, the user form is:
+
+```text
+https://script.google.com/macros/s/AKfycbyNN-uVG782QHStGfEYwZACeqDAJamOr21XmlK2ZtM76FYm2Qc_dlZn9h6ovQSxTxnB/exec
+```
+
+The admin panel is:
+
+```text
+https://script.google.com/macros/s/AKfycbyNN-uVG782QHStGfEYwZACeqDAJamOr21XmlK2ZtM76FYm2Qc_dlZn9h6ovQSxTxnB/exec?page=admin
+```
+
+## Required Google access
+
+The Apps Script code uses these fixed IDs:
+
+| Item | ID |
+| --- | --- |
+| Google Sheet | `1Xru8dZVrxCQO2e71oKhLr_ISVPJHGKBZlznK1zSxZj8` |
+| Photos folder | `1LJAqwfPqcCBO77GLFzL0SrZqhum5PptJ` |
+
+The Google account that deploys the Apps Script must have access to both.
+
+## Admin password
+
+The admin password is set in `appsscript/Code.gs`:
+
+```js
+const ADMIN_PASSWORD = 'pmshri@2026';
+```
+
+Change it before deployment if needed.
+
+## Updating later
+
+When code changes:
+
+1. Paste the updated files into Apps Script.
+2. Click **Deploy** -> **Manage deployments**.
+3. Edit the existing Web App deployment.
+4. Select **New version**.
+5. Click **Deploy**.

@@ -233,8 +233,6 @@ tbody tr:hover { background: #fafbff; }
 </div>
 
 <script>
-const GAS_API = 'https://script.google.com/macros/s/AKfycbyNN-uVG782QHStGfEYwZACeqDAJamOr21XmlK2ZtM76FYm2Qc_dlZn9h6ovQSxTxnB/exec';
-
 let allData    = [];
 let filtered   = [];
 let currentFilter = 'all';
@@ -243,27 +241,32 @@ let sortAsc    = true;
 let adminPwd   = '';
 
 // ---- Login ----
-async function doAdminLogin() {
+function doAdminLogin() {
   const pwd = document.getElementById('pwdInput').value.trim();
   if (!pwd) { showErr('Please enter password.'); return; }
   const btn = document.getElementById('loginBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Loading...';
-  try {
-    const res  = await fetch(GAS_API + '?action=getAdminData&pwd=' + encodeURIComponent(pwd));
-    const data = await res.json();
-    if (data.success) {
-      adminPwd = pwd;
-      allData  = data.data;
-      showDashboard(data);
-    } else {
-      showErr(data.message === 'Unauthorized' ? 'Incorrect password.' : data.message);
-    }
-  } catch (e) {
-    showErr('Connection error: ' + e.message);
-  }
-  btn.disabled = false;
-  btn.innerHTML = 'Login &rarr;';
+
+  google.script.run
+    .withSuccessHandler(function(data) {
+      btn.disabled = false;
+      btn.innerHTML = 'Login &rarr;';
+
+      if (data.success) {
+        adminPwd = pwd;
+        allData  = data.data;
+        showDashboard(data);
+      } else {
+        showErr(data.message === 'Unauthorized' ? 'Incorrect password.' : data.message);
+      }
+    })
+    .withFailureHandler(function(err) {
+      btn.disabled = false;
+      btn.innerHTML = 'Login &rarr;';
+      showErr('Connection error: ' + err.message);
+    })
+    .getAdminDataForPassword(pwd);
 }
 document.getElementById('pwdInput').addEventListener('keydown', e => { if (e.key === 'Enter') doAdminLogin(); });
 
@@ -300,6 +303,7 @@ function showDashboard(data) {
   // Populate district filter
   const districts = [...new Set(allData.map(r => r.district))].sort();
   const sel = document.getElementById('distFilter');
+  sel.innerHTML = '<option value="">All Districts</option>';
   districts.forEach(d => {
     const opt = document.createElement('option');
     opt.value = d; opt.textContent = d;

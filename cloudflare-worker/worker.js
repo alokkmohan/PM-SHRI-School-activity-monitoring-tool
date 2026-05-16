@@ -108,18 +108,20 @@ async function getAccessToken(env) {
 }
 
 async function makeJWT(header, payload, pemKey) {
-  const pem = pemKey
-    .replace(/\\n/g, '\n')
+  const keyText = normalizePrivateKey(pemKey);
+  const pem = keyText
     .replace('-----BEGIN PRIVATE KEY-----', '')
     .replace('-----END PRIVATE KEY-----', '')
-    .replace('-----BEGIN RSA PRIVATE KEY-----', '')
-    .replace('-----END RSA PRIVATE KEY-----', '')
     .replace(/\s/g, '');
 
-  const keyData = Buffer.from(pem, 'base64');
+  if (!pem) {
+    throw new Error('SA_PRIVATE_KEY is empty or not configured');
+  }
+
+  const keyData = Uint8Array.from(atob(pem), c => c.charCodeAt(0));
 
   const key = await crypto.subtle.importKey(
-    'pkcs8', keyData.buffer,
+    'pkcs8', keyData,
     { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
     false, ['sign']
   );
@@ -132,6 +134,35 @@ async function makeJWT(header, payload, pemKey) {
   const s    = btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 
   return `${h}.${p}.${s}`;
+}
+
+function normalizePrivateKey(value) {
+  let key = String(value || '').trim();
+
+  if (!key) return '';
+
+  try {
+    const parsed = JSON.parse(key);
+    if (parsed && typeof parsed.private_key === 'string') {
+      key = parsed.private_key;
+    }
+  } catch (_) {
+    // The secret is usually a PEM string, not JSON.
+  }
+
+  const privateKeyLine = key.match(/"private_key"\s*:\s*"([\s\S]*?)"\s*,?/);
+  if (privateKeyLine) {
+    key = privateKeyLine[1];
+  }
+
+  key = key
+    .trim()
+    .replace(/^"|"$/g, '')
+    .replace(/\\n/g, '\n')
+    .replace(/\\\\n/g, '\n');
+
+  const match = key.match(/-----BEGIN PRIVATE KEY-----[\s\S]+?-----END PRIVATE KEY-----/);
+  return match ? match[0] : key;
 }
 
 // ================================================================
