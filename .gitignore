@@ -10,3 +10,10 @@ desktop.ini
 # Editor
 .vscode/
 *.swp
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
