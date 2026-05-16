@@ -8,12 +8,17 @@ const SCHOOLS_SHEET   = 'Sheet1';
 const RESPONSES_SHEET = 'Responses';
 const DATA_START_ROW  = 4;
 const PHOTOS_FOLDER_ID = '1LJAqwfPqcCBO77GLFzL0SrZqhum5PptJ';
+const ADMIN_PASSWORD  = 'pmshri@2026';
 
 // ---- Serve Web App / API ----
 function doGet(e) {
   const action = e && e.parameter && e.parameter.action;
   if (action === 'getSchool') {
     return jsonResp(getSchoolData(e.parameter.udise || ''));
+  }
+  if (action === 'getAdminData') {
+    if (e.parameter.pwd !== ADMIN_PASSWORD) return jsonResp({ success: false, message: 'Unauthorized' });
+    return jsonResp(getAdminData());
   }
   return HtmlService.createTemplateFromFile('Index')
     .evaluate()
@@ -200,6 +205,58 @@ function saveActivityData(formData) {
     ]);
 
     return { success: true };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
+
+// ---- Admin: All Schools + Submission Status ----
+function getAdminData() {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+
+    // All schools
+    const sSheet  = ss.getSheetByName(SCHOOLS_SHEET);
+    const lastRow = sSheet.getLastRow();
+    const sData   = sSheet.getRange(DATA_START_ROW, 1, lastRow - DATA_START_ROW + 1, 6).getValues();
+    const schools = sData
+      .map(r => ({
+        slNo:          r[0],
+        district:      String(r[1]).trim(),
+        udise:         String(r[2]).trim().replace(/\.0$/, '').padStart(11, '0'),
+        schoolName:    String(r[3]).trim(),
+        principalName: String(r[4]).trim(),
+        mobile:        String(r[5]).trim().replace(/\.0$/, '')
+      }))
+      .filter(s => s.schoolName);
+
+    // All submissions
+    const rSheet = ss.getSheetByName(RESPONSES_SHEET);
+    const submByUdise = {};
+    if (rSheet && rSheet.getLastRow() >= 2) {
+      rSheet.getRange(2, 1, rSheet.getLastRow() - 1, 16).getValues()
+        .filter(r => r[7])
+        .forEach(r => {
+          const key = normUdise(r[3]);
+          if (!submByUdise[key]) submByUdise[key] = [];
+          submByUdise[key].push({
+            activityNum:  r[6],
+            activityName: r[7],
+            fromDate:     r[8] ? Utilities.formatDate(new Date(r[8]), 'Asia/Kolkata', 'dd-MMM-yyyy') : '',
+            toDate:       r[9] ? Utilities.formatDate(new Date(r[9]), 'Asia/Kolkata', 'dd-MMM-yyyy') : '',
+            boys:         r[10], girls: r[11], teachers: r[12],
+            timestamp:    r[0]  ? Utilities.formatDate(new Date(r[0]),  'Asia/Kolkata', 'dd-MMM-yyyy HH:mm') : ''
+          });
+        });
+    }
+
+    const rows = schools.map(s => {
+      const subs = submByUdise[normUdise(s.udise)] || [];
+      return { ...s, activityCount: subs.length, activities: subs };
+    });
+
+    const submitted = rows.filter(r => r.activityCount > 0).length;
+    return { success: true, data: rows, total: rows.length, submitted, pending: rows.length - submitted };
   } catch (err) {
     return { success: false, message: err.message };
   }
