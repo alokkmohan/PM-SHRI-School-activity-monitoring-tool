@@ -226,6 +226,51 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
+/* ---- SUCCESS MODAL ---- */
+.success-overlay {
+  position: fixed; inset: 0; background: rgba(13,38,87,0.75);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1100; padding: 20px;
+}
+.success-overlay.show { display: flex; }
+.success-modal {
+  background: white; border-radius: 20px;
+  padding: 36px 32px 28px; max-width: 400px; width: 100%;
+  text-align: center; position: relative;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+  animation: popIn 0.3s ease;
+}
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.success-close {
+  position: absolute; top: 14px; right: 16px;
+  background: #f1f5fb; border: none; border-radius: 50%;
+  width: 32px; height: 32px; font-size: 1.1rem; color: var(--muted);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.success-close:hover { background: #e2e8f0; }
+.success-icon { font-size: 3.5rem; margin-bottom: 12px; }
+.success-title { font-size: 1.25rem; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+.success-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+.btn-upload-another {
+  width: 100%; padding: 13px; margin-bottom: 10px;
+  background: linear-gradient(90deg, var(--green), #2ea84f);
+  color: white; font-size: 0.95rem; font-weight: 700;
+  border: none; border-radius: 10px; cursor: pointer;
+  box-shadow: 0 3px 10px rgba(27,138,60,0.35); transition: filter 0.2s;
+}
+.btn-upload-another:hover { filter: brightness(1.08); }
+.btn-close-modal {
+  width: 100%; padding: 11px;
+  background: #f1f5fb; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  border: none; border-radius: 10px; cursor: pointer; transition: background 0.2s;
+}
+.btn-close-modal:hover { background: #e2e8f0; }
+
 .spinner {
   display: inline-block; width: 18px; height: 18px;
   border: 3px solid rgba(255,255,255,0.3); border-top-color: white;
@@ -421,6 +466,22 @@ input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rg
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
+
+<!-- Success Modal -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-modal">
+    <button class="success-close" onclick="closeSuccessModal()">&#x2715;</button>
+    <div class="success-icon">&#9989;</div>
+    <div class="success-title">Activity Submitted!</div>
+    <div class="success-sub" id="successMsg">Activity submitted successfully.</div>
+    <button class="btn-upload-another" onclick="closeSuccessModal()">
+      &#43;&nbsp; Upload Another Activity
+    </button>
+    <button class="btn-close-modal" onclick="closeSuccessModal()">
+      Close
+    </button>
+  </div>
+</div>
 
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbw2d8iQBHp4a0gZDGY-ZWTs69jpEK10v_n2SEihlsUhPKfWpPunHl1TgX8NlwlZDZ9p/exec';
@@ -745,7 +806,7 @@ async function submitActivity() {
         clearForm();
         buildActTabs();
         renderPrevTable();
-        showToast('Activity ' + submittedNum + ' submitted successfully!');
+        showSuccessModal('Activity ' + submittedNum + ' submitted successfully!\nYou can now upload another activity.');
       } else {
         showAlert('formAlert', 'Error saving data: ' + res.message);
       }
@@ -827,6 +888,13 @@ function showToast(msg) {
   t.textContent = '✓  ' + msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3500);
+}
+function showSuccessModal(msg) {
+  document.getElementById('successMsg').innerHTML = msg.replace(/\n/g, '<br>');
+  document.getElementById('successOverlay').classList.add('show');
+}
+function closeSuccessModal() {
+  document.getElementById('successOverlay').classList.remove('show');
 }
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
