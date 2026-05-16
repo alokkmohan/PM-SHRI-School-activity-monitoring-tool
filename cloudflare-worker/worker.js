@@ -109,11 +109,13 @@ async function getAccessToken(env) {
 
 async function makeJWT(header, payload, pemKey) {
   const pem = pemKey
-    .replace(/\\n/g, '\n')          // literal \n → actual newline
-    .replace(/-+BEGIN[^-]+-+/g, '') // remove -----BEGIN PRIVATE KEY-----
-    .replace(/-+END[^-]+-+/g, '')   // remove -----END PRIVATE KEY-----
-    .replace(/\s/g, '');            // remove all whitespace/newlines
-  const keyData = Uint8Array.from(atob(pem), c => c.charCodeAt(0));
+    .replace(/^["'`]|["'`]$/g, '')
+    .replace(/\\n/g, '\n')
+    .replace(/-{3,}[\w\s]+-{3,}/g, '')
+    .replace(/\s/g, '');
+
+  // Use Buffer (nodejs_compat) — more reliable than atob() for PEM keys
+  const keyData = Buffer.from(pem, 'base64');
 
   const key = await crypto.subtle.importKey(
     'pkcs8', keyData.buffer,
